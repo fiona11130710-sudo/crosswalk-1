@@ -3,129 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 智慧道路硬體危險度評估系統</title>
-    <!-- 引入 Bootstrap 5 樣式庫 -->
+    <title>斑馬線 AI 離線辨識系統 (ONNX Runtime)</title>
+    <!-- 引入 Bootstrap 5 CDN -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- 引入 ONNX Runtime Web 官方套件 (CDN) -->
+    <!-- 引入 ONNX Runtime Web CDN -->
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
     <style>
-        body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f8f9fa; }
-        .hero-banner { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 50px 20px 40px; }
-        .feature-card { border: none; border-radius: 12px; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-        .feature-card:hover { transform: translateY(-4px); }
-        .stat-card { border-left: 4px solid #1e3c72; }
-        canvas { max-width: 100%; height: auto; border-radius: 8px; border: 2px solid #dee2e6; }
+        :root {
+            --primary-blue: #1e3c72;
+            --secondary-blue: #2a5298;
+            --accent-warning: #ffc107;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        /* 頂部導覽列 */
+        .navbar-custom {
+            background-color: var(--primary-blue);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+        }
+
+        /* Hero 區塊 */
+        .hero-banner {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 60px 20px 50px;
+            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.05);
+        }
+
+        /* 卡片美化 */
+        .card-custom {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        .card-custom:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+
+        /* 指標卡片邊框 */
+        .stat-card-danger {
+            border-left: 5px solid #dc3545;
+        }
+        .stat-card-success {
+            border-left: 5px solid #198754;
+        }
+
+        /* Canvas 視覺 */
+        canvas {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            border: 2px solid #dee2e6;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            position: relative;
+            padding-bottom: 12px;
+            margin-bottom: 25px;
+            font-weight: 700;
+        }
+        .section-title::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 4px;
+            background: var(--primary-blue);
+            border-radius: 2px;
+        }
     </style>
 </head>
 <body>
 
-    <!-- 1. 頁頭主視覺區塊 (頂部) -->
+    <!-- 1. 頂部導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4" href="#">
+                🚦 斑馬線 AI 離線辨識系統
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link text-white" href="#standards">評估標準</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#features">核心技術</a></li>
+                    <li class="nav-item"><a class="nav-link text-white fw-bold ms-2" href="#system-demo">👉 實作測試區</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 2. Hero 主視覺 Banner -->
     <div class="hero-banner text-center mb-5">
         <div class="container">
-            <span class="badge bg-warning text-dark px-3 py-2 mb-2 fw-bold fs-6">Edge AI 實境應用展演</span>
-            <h1 class="display-6 fw-bold">🚦 AI 智慧道路硬體危險度評估系統</h1>
-            <p class="lead mt-2 mx-auto" style="max-width: 750px; font-size: 1.05rem; color: #e0e0e0;">
-                結合 YOLO 物件偵測與靜態幾何規則引擎，即時評估路口斑馬線退縮距離與安全風險
+            <span class="badge bg-warning text-dark px-3 py-2 mb-3 fw-bold fs-6 shadow-sm">Edge AI 實境應用展演</span>
+            <h1 class="display-5 fw-bold mb-3">🚦 斑馬線 AI 離線辨識系統</h1>
+            <p class="lead mx-auto" style="max-width: 780px; color: #e2e8f0; font-size: 1.15rem;">
+                結合 YOLO 物件偵測與靜態幾何規則引擎，即時定位斑馬線空間座標，自動計算退縮距離與車輛視線死角風險。
             </p>
-            <a href="#system-demo" class="btn btn-warning btn-lg fw-bold mt-2 px-4 shadow">直接滑到下方體驗測試 🚀</a>
+            <a href="#system-demo" class="btn btn-warning btn-lg fw-bold mt-3 px-4 shadow">滑至頁尾體驗測試 🚀</a>
         </div>
     </div>
 
     <div class="container">
 
-        <!-- 2. 靜態幾何算則與教學說明區塊 -->
-        <div class="row g-4 mb-5">
-            <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm p-4 bg-white">
-                    <h4 class="fw-bold mb-3 text-primary">📐 靜態危險度評估標準 (Rule-Based)</h4>
-                    <p class="text-muted">本系統依據駕駛視角與空間比例，定義雙重幾何安全緩衝門檻：</p>
-                    <div class="stat-card p-3 bg-light mb-3">
-                        <h6 class="fw-bold text-danger mb-1">🔴 視線盲區門檻 (18%)</h6>
-                        <small class="text-muted">斑馬線底邊距離畫面底部低於影像總高度 18% 時，代表過於貼近轉角/車頭盲區。</small>
-                    </div>
-                    <div class="stat-card p-3 bg-light mb-3">
-                        <h6 class="fw-bold text-danger mb-1">🔴 空間壓迫門檻 (25%)</h6>
-                        <small class="text-muted">斑馬線高度佔比超過影像總高度 25% 時，代表涵蓋近距離大面積死角。</small>
-                    </div>
-                    <div class="stat-card p-3 bg-light" style="border-left-color: #198754;">
-                        <h6 class="fw-bold text-success mb-1">🟢 標準退縮規範</h6>
-                        <small class="text-muted">符合安全緩衝距離，車輛轉彎時擁有充足的視野與反應時間。</small>
-                    </div>
-                </div>
-            </div>
+        <!-- 3. 幾何危險度算則說明區塊 -->
+        <section id="standards" class="mb-5">
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="card card-custom h-100 p-4 bg-white">
+                        <h3 class="section-title text-primary">📐 靜態危險度評估標準 (Rule-Based)</h3>
+                        <p class="text-muted">本系統依據標準駕駛視野與道路幾何比例，設定雙重安全緩衝門檻：</p>
 
-            <div class="col-md-6">
-                <div class="card h-100 border-0 shadow-sm p-4 bg-white">
-                    <h4 class="fw-bold mb-3 text-primary">💡 營隊教學與架構延伸</h4>
-                    <p class="text-muted">本專案展示了完整的端到端（End-to-End）AI 應用實踐開發流程：</p>
-                    <ol class="list-group list-group-numbered list-group-flush mb-3">
-                        <li class="list-group-item bg-transparent"><b>資料標註與訓練：</b>使用 Roboflow 標註影像，並於 Google Colab 訓練 YOLO 模型。</li>
-                        <li class="list-group-item bg-transparent"><b>跨平台輕量化：</b>將 `.pt` 模型轉檔為跨平台 ONNX 通用格式。</li>
-                        <li class="list-group-item bg-transparent"><b>前端融合推論：</b>透過 HTML5 + Canvas + JS 實現即時地端推理與視覺化呈報。</li>
-                    </ol>
-                    <div class="alert alert-info mb-0 small">
-                        <b>👨‍💻 課堂體驗：</b>學員可開啟開發者工具修改 JS 門檻參數（`0.18` 或 `0.25`），親自調整決策邏輯！
+                        <div class="stat-card-danger p-3 bg-light rounded-3 mb-3">
+                            <h6 class="fw-bold text-danger mb-1">🔴 視線盲區門檻 (18%)</h6>
+                            <small class="text-secondary">斑馬線底邊距離影像底部小於總高度 18% 時，代表過於貼近轉角死角或車頭盲區。</small>
+                        </div>
+                        <div class="stat-card-danger p-3 bg-light rounded-3 mb-3">
+                            <h6 class="fw-bold text-danger mb-1">🔴 空間壓迫門檻 (25%)</h6>
+                            <small class="text-secondary">斑馬線高度佔比超過影像總高度 25% 時，代表涵蓋近距離大面積死角。</small>
+                        </div>
+                        <div class="stat-card-success p-3 bg-light rounded-3">
+                            <h6 class="fw-bold text-success mb-1">🟢 安全退縮標準</h6>
+                            <small class="text-secondary">符合安全緩衝距離，車輛轉彎時擁有充足視野與應變反應時間。</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card card-custom h-100 p-4 bg-white">
+                        <h3 class="section-title text-primary">💡 營隊教學與架構延伸</h3>
+                        <p class="text-muted">本專案展示了完整的端到端（End-to-End）Edge AI 應用開發實踐流程：</p>
+                        <ol class="list-group list-group-numbered list-group-flush mb-3">
+                            <li class="list-group-item bg-transparent"><b>資料標註與訓練：</b>使用 Roboflow 標註影像，並於 Google Colab 訓練 YOLO 模型。</li>
+                            <li class="list-group-item bg-transparent"><b>跨平台輕量化：</b>將 `.pt` 模型轉檔為跨平台 ONNX 通用格式。</li>
+                            <li class="list-group-item bg-transparent"><b>前端融合推論：</b>透過 HTML5 + Canvas + JS 實現即時地端推理與視覺化呈報。</li>
+                        </ol>
+                        <div class="alert alert-info mb-0 small">
+                            <b>👨‍💻 課堂體驗：</b>學員可開啟開發者工具修改 JS 門檻參數（`0.18` 或 `0.25`），親自調整決策邏輯！
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
 
-        <!-- 3. 核心技術亮點卡片區 -->
-        <div class="row g-4 mb-5 text-center">
-            <div class="col-md-4">
-                <div class="card feature-card p-4 h-100 bg-white">
-                    <div class="fs-1 mb-2">⚡</div>
-                    <h5 class="fw-bold">純地端推論 (Edge AI)</h5>
-                    <p class="text-muted small mb-0">採用 ONNX Runtime Web 技術，所有數據與照片皆在瀏覽器端運算完畢，免後端伺服器且高隱私。</p>
+        <!-- 4. 核心技術亮點卡片區 -->
+        <section id="features" class="mb-5">
+            <h3 class="section-title text-primary text-center mx-auto" style="max-width: 300px;">🚀 系統核心技術特色</h3>
+            <div class="row g-4 text-center mt-2">
+                <div class="col-md-4">
+                    <div class="card card-custom p-4 h-100 bg-white">
+                        <div class="fs-1 mb-2">⚡</div>
+                        <h5 class="fw-bold">純地端推論 (Edge AI)</h5>
+                        <p class="text-muted small mb-0">採用 ONNX Runtime Web 技術，所有數據與照片皆在瀏覽器端運算完畢，免後端伺服器且高隱私。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom p-4 h-100 bg-white">
+                        <div class="fs-1 mb-2">🎯</div>
+                        <h5 class="fw-bold">YOLO 空間標定</h5>
+                        <p class="text-muted small mb-0">基於輕量化 YOLO 模型，精準定位道路影像中的斑馬線（Crosswalk）邊界座標與高寬比。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom p-4 h-100 bg-white">
+                        <div class="fs-1 mb-2">🧠</div>
+                        <h5 class="fw-bold">幾何規則決策引擎</h5>
+                        <p class="text-muted small mb-0">超越單純物件畫框，透過底邊退縮距離（18%）與面積佔比（25%）門檻產出自動化安全分析報告。</p>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card feature-card p-4 h-100 bg-white">
-                    <div class="fs-1 mb-2">🎯</div>
-                    <h5 class="fw-bold">YOLO 空間標定</h5>
-                    <p class="text-muted small mb-0">基於輕量化 YOLO 模型，精準定位道路影像中的斑馬線（Crosswalk）邊界座標與高寬比。</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card feature-card p-4 h-100 bg-white">
-                    <div class="fs-1 mb-2">🧠</div>
-                    <h5 class="fw-bold">幾何規則決策引擎</h5>
-                    <p class="text-muted small mb-0">超越單純物件畫框，透過底邊退縮距離（18%）與面積佔比（25%）門檻產出自動化安全分析報告。</p>
-                </div>
-            </div>
-        </div>
+        </section>
 
-        <!-- 4. 【核心測試系統】（置底測試區塊） -->
-        <div id="system-demo" class="card shadow-sm border-0 p-4 mb-5 bg-white rounded-3">
-            <div class="row align-items-center">
-                <div class="col-12 text-center mb-3">
-                    <h3 class="fw-bold text-primary">📷 實作測試系統：上傳街景圖片進行評估</h3>
-                    <p class="text-muted">請選擇或拖曳街景照片，系統將自動進行地端 AI 辨識與幾何算則分析</p>
+        <!-- 5. 【核心實作測試區塊】（擺在頁面最下方） -->
+        <section id="system-demo" class="mb-5">
+            <div class="card card-custom p-4 bg-white">
+                <h3 class="section-title text-primary text-center mb-2">📷 斑馬線（Crosswalk）離線 AI 辨識系統</h3>
+                <p class="text-muted text-center mb-4">請選擇或拖曳街景照片，系統將自動進行地端 AI 辨識與幾何算則分析</p>
+                
+                <div class="d-flex flex-column align-items-center">
+                    <input class="form-control form-control-lg mb-2" type="file" id="imageInput" accept="image/*" style="max-width: 500px;" disabled>
+                    <div id="status" class="fw-bold text-success my-2 fs-6">⏳ 正在載入 ONNX 模型中，請稍候...</div>
                     
-                    <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
-                        <input class="form-control form-control-lg" type="file" id="imageInput" accept="image/*" style="max-width: 480px;" disabled>
+                    <!-- Canvas 畫布輸出區 -->
+                    <div class="mt-3 text-center w-100">
+                        <canvas id="outputCanvas"></canvas>
                     </div>
-                    <div id="status" class="mt-3 fw-bold text-success fs-6">⏳ 正在載入 ONNX 模型中，請稍候...</div>
-                </div>
-
-                <!-- Canvas 影像顯示區與報告輸出區 -->
-                <div class="col-12 text-center mb-2">
-                    <canvas id="outputCanvas"></canvas>
                 </div>
             </div>
-        </div>
+        </section>
 
     </div>
 
     <!-- 頁尾區塊 -->
     <footer class="bg-dark text-white text-center py-4 mt-5">
         <div class="container">
-            <p class="mb-1">🚦 AI 智慧道路硬體危險度評估系統</p>
-            <small class="text-muted">專題與資訊營隊教學展示作品 &copy; 2026 All Rights Reserved.</small>
+            <p class="mb-1 fw-bold">🚦 斑馬線 AI 離線辨識系統 (ONNX Runtime)</p>
+            <small class="text-white-50">專題與資訊營隊教學展示作品 &copy; 2026 All Rights Reserved.</small>
         </div>
     </footer>
 
-    <!-- JavaScript 邏輯程式碼 -->
+    <!-- JavaScript 邏輯程式碼（完全維持原本穩定版本） -->
     <script>
         let session = null;
         const statusDiv = document.getElementById('status');
@@ -168,16 +256,16 @@
                 ctx.drawImage(img, 0, 0);
                 
                 if (boxes.length === 0) {
-                    statusDiv.innerText = "⚠️ 辨識完成：畫面中未偵測到斑馬線。";
+                    statusDiv.innerText = "⚠️ 未偵測到斑馬線！";
                     drawBoxes([]);
                 } else {
                     drawBoxes(boxes);
-                    statusDiv.innerText = `✅ 辨識完成！成功標定 ${boxes.length} 處斑馬線並完成危險度分析。`;
+                    statusDiv.innerText = `✅ 辨識完成！共找到 ${boxes.length} 個斑馬線。`;
                 }
             };
         });
 
-        // 圖片預處理
+        // 圖片預處理：轉為 1x3x640x640 張量
         async function preprocessImage(img) {
             const tempCanvas = document.createElement('canvas');
             tempCanvas.width = 640;
@@ -199,7 +287,7 @@
             return new ort.Tensor('float32', float32Data, [1, 3, 640, 640]);
         }
 
-        // ONNX 後處理矩陣解析
+        // 3. ONNX 輸出矩陣解析
         function postprocess(results, origW, origH, confThreshold) {
             const outputKey = Object.keys(results)[0];
             const data = results[outputKey].data;
@@ -245,7 +333,7 @@
             return intersection / union;
         }
 
-        // 4. 在 Canvas 繪製標籤並渲染報告
+        // 4. 在 Canvas 繪製標籤並動態產生報告面板
         function drawBoxes(boxes) {
             const imgHeight = canvas.height;
             
@@ -310,6 +398,7 @@
             });
         }
 
+        // 啟動模型
         initModel();
     </script>
 </body>
