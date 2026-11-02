@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI 智慧道路硬體危險度評估系統</title>
-    <!-- 引入 Bootstrap 5 樣式庫庫 -->
+    <!-- 引入 Bootstrap 5 樣式庫 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- 引入 ONNX Runtime Web 官方套件 (CDN) -->
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
     <style>
         body { font-family: "Microsoft JhengHei", sans-serif; background-color: #f8f9fa; }
-        .hero-banner { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 60px 20px; }
+        .hero-banner { background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%); color: white; padding: 50px 20px 40px; }
         .feature-card { border: none; border-radius: 12px; transition: transform 0.2s; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
         .feature-card:hover { transform: translateY(-4px); }
         .stat-card { border-left: 4px solid #1e3c72; }
@@ -19,66 +19,21 @@
 </head>
 <body>
 
-    <!-- 1. Hero 主視覺區塊 -->
+    <!-- 1. 頁頭主視覺區塊 (頂部) -->
     <div class="hero-banner text-center mb-5">
         <div class="container">
-            <span class="badge bg-warning text-dark px-3 py-2 mb-3 fw-bold fs-6">Edge AI 實境應用展演</span>
-            <h1 class="display-5 fw-bold">🚦 AI 智慧道路硬體危險度評估系統</h1>
-            <p class="lead mt-3 mx-auto" style="max-width: 750px;">
-                結合 YOLO 物件偵測與靜態幾何規則引擎，透過純前端 Edge AI 即時辨識路口斑馬線，並自動評估退縮距離與行人視野安全風險。
+            <span class="badge bg-warning text-dark px-3 py-2 mb-2 fw-bold fs-6">Edge AI 實境應用展演</span>
+            <h1 class="display-6 fw-bold">🚦 AI 智慧道路硬體危險度評估系統</h1>
+            <p class="lead mt-2 mx-auto" style="max-width: 750px; font-size: 1.05rem; color: #e0e0e0;">
+                結合 YOLO 物件偵測與靜態幾何規則引擎，即時評估路口斑馬線退縮距離與安全風險
             </p>
-            <a href="#system-demo" class="btn btn-warning btn-lg fw-bold mt-2 px-4 shadow">立即開始測試 🚀</a>
+            <a href="#system-demo" class="btn btn-warning btn-lg fw-bold mt-2 px-4 shadow">直接滑到下方體驗測試 🚀</a>
         </div>
     </div>
 
     <div class="container">
 
-        <!-- 2. 核心技術與特色區塊 -->
-        <div class="row g-4 mb-5 text-center">
-            <div class="col-md-4">
-                <div class="card feature-card p-4 h-100 bg-white">
-                    <div class="fs-1 mb-2">⚡</div>
-                    <h5 class="fw-bold">純地端推論 (Edge AI)</h5>
-                    <p class="text-muted small mb-0">採用 ONNX Runtime Web 技術，所有數據與照片皆在瀏覽器端運算完畢，免後端伺服器且高隱私。</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card feature-card p-4 h-100 bg-white">
-                    <div class="fs-1 mb-2">🎯</div>
-                    <h5 class="fw-bold">YOLO 空間標定</h5>
-                    <p class="text-muted small mb-0">基於輕量化 YOLO 模型，精準定位道路影像中的斑馬線（Crosswalk）邊界座標與高寬比。</p>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card feature-card p-4 h-100 bg-white">
-                    <div class="fs-1 mb-2">🧠</div>
-                    <h5 class="fw-bold">幾何規則決策引擎</h5>
-                    <p class="text-muted small mb-0">超越單純物件畫框，透過底邊退縮距離（18%）與面積佔比（25%）門檻產出自動化安全分析報告。</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- 3. 系統實作測試區塊 -->
-        <div id="system-demo" class="card shadow-sm border-0 p-4 mb-5 bg-white rounded-3">
-            <div class="row align-items-center">
-                <div class="col-12 text-center mb-4">
-                    <h3 class="fw-bold">📷 路口影像危險度評估系統</h3>
-                    <p class="text-muted">請選擇或拖曳街景照片，系統將自動進行 AI 物件辨識與風險算則分析</p>
-                    
-                    <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
-                        <input class="form-control form-control-lg" type="file" id="imageInput" accept="image/*" style="max-width: 450px;" disabled>
-                    </div>
-                    <div id="status" class="mt-2 fw-bold text-success">⏳ 正在載入 ONNX 模型中，請稍候...</div>
-                </div>
-
-                <!-- Canvas 影像顯示區 -->
-                <div class="col-12 text-center mb-3">
-                    <canvas id="outputCanvas"></canvas>
-                </div>
-            </div>
-        </div>
-
-        <!-- 4. 決策算則與參數說明 -->
+        <!-- 2. 靜態幾何算則與教學說明區塊 -->
         <div class="row g-4 mb-5">
             <div class="col-md-6">
                 <div class="card h-100 border-0 shadow-sm p-4 bg-white">
@@ -86,7 +41,7 @@
                     <p class="text-muted">本系統依據駕駛視角與空間比例，定義雙重幾何安全緩衝門檻：</p>
                     <div class="stat-card p-3 bg-light mb-3">
                         <h6 class="fw-bold text-danger mb-1">🔴 視線盲區門檻 (18%)</h6>
-                        <small class="text-muted">斑馬線底邊距離畫面底部低於影像總高度 18% 時，代表斑馬線過於貼近轉角/車頭盲區。</small>
+                        <small class="text-muted">斑馬線底邊距離畫面底部低於影像總高度 18% 時，代表過於貼近轉角/車頭盲區。</small>
                     </div>
                     <div class="stat-card p-3 bg-light mb-3">
                         <h6 class="fw-bold text-danger mb-1">🔴 空間壓迫門檻 (25%)</h6>
@@ -111,6 +66,51 @@
                     <div class="alert alert-info mb-0 small">
                         <b>👨‍💻 課堂體驗：</b>學員可開啟開發者工具修改 JS 門檻參數（`0.18` 或 `0.25`），親自調整決策邏輯！
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. 核心技術亮點卡片區 -->
+        <div class="row g-4 mb-5 text-center">
+            <div class="col-md-4">
+                <div class="card feature-card p-4 h-100 bg-white">
+                    <div class="fs-1 mb-2">⚡</div>
+                    <h5 class="fw-bold">純地端推論 (Edge AI)</h5>
+                    <p class="text-muted small mb-0">採用 ONNX Runtime Web 技術，所有數據與照片皆在瀏覽器端運算完畢，免後端伺服器且高隱私。</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card p-4 h-100 bg-white">
+                    <div class="fs-1 mb-2">🎯</div>
+                    <h5 class="fw-bold">YOLO 空間標定</h5>
+                    <p class="text-muted small mb-0">基於輕量化 YOLO 模型，精準定位道路影像中的斑馬線（Crosswalk）邊界座標與高寬比。</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card p-4 h-100 bg-white">
+                    <div class="fs-1 mb-2">🧠</div>
+                    <h5 class="fw-bold">幾何規則決策引擎</h5>
+                    <p class="text-muted small mb-0">超越單純物件畫框，透過底邊退縮距離（18%）與面積佔比（25%）門檻產出自動化安全分析報告。</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. 【核心測試系統】（置底測試區塊） -->
+        <div id="system-demo" class="card shadow-sm border-0 p-4 mb-5 bg-white rounded-3">
+            <div class="row align-items-center">
+                <div class="col-12 text-center mb-3">
+                    <h3 class="fw-bold text-primary">📷 實作測試系統：上傳街景圖片進行評估</h3>
+                    <p class="text-muted">請選擇或拖曳街景照片，系統將自動進行地端 AI 辨識與幾何算則分析</p>
+                    
+                    <div class="d-flex justify-content-center align-items-center gap-3 mt-3">
+                        <input class="form-control form-control-lg" type="file" id="imageInput" accept="image/*" style="max-width: 480px;" disabled>
+                    </div>
+                    <div id="status" class="mt-3 fw-bold text-success fs-6">⏳ 正在載入 ONNX 模型中，請稍候...</div>
+                </div>
+
+                <!-- Canvas 影像顯示區與報告輸出區 -->
+                <div class="col-12 text-center mb-2">
+                    <canvas id="outputCanvas"></canvas>
                 </div>
             </div>
         </div>
