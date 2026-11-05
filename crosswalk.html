@@ -213,35 +213,38 @@ print("✅ 模型匯出成功！請至左側資料夾下載 best.onnx 檔案。"
                 </div>
 
                 <!-- Step 3: GitHub Pages -->
-<!-- Step 3: GitHub Pages -->
-<div id="step3" class="card step-card p-4 mb-5">
-    <div class="d-flex align-items-center mb-3">
-        <span class="step-number">3</span>
-        <h3 class="fw-bold mb-0 text-primary">GitHub Pages：網頁一鍵部署與成果展示</h3>
-    </div>
-    <p class="text-muted">將前端網頁 <code>index.html</code> 與剛下載的 <code>best.onnx</code> 檔案上傳至 GitHub，產出專屬的 AI 辨識網站！</p>
-    
-    <ol class="lh-lg mb-3">
-        <li>登入 <a href="https://github.com/" target="_blank" class="fw-bold">GitHub</a>，點擊右上角 <b>+ -> New repository</b> 建立新的儲存庫（如：<code>crosswalk-ai-app</code>）。</li>
-        <li><b>新增/上傳專案檔案</b>（可選擇以下任一方式）：
-            <ul>
-                <li><b>方式 A（直接貼上程式碼）</b>：點擊 <b>Creating a new file</b> ➔ 檔名輸入 <code>index.html</code> ➔ 將準備好的網頁程式碼直接複製貼入編輯區 ➔ 滑到最下方點擊 <b>Commit changes</b>。（同理可新建 <code>crosswalk.html</code>）</li>
-                <li><b>方式 B（拖曳上傳現成檔案）</b>：點擊 <b>uploading an existing file</b> ➔ 將電腦中的 <code>index.html</code>、<code>crosswalk.html</code> 與從 Colab 下載的 <code>best.onnx</code> 一起拖曳上傳 ➔ 點擊 <b>Commit changes</b>。</li>
-            </ul>
-        </li>
-        <li>進入儲存庫頂部的 <b>Settings -> 左側 Pages</b>：
-            <ul>
-                <li><b>Source</b>：選為 <code>Deploy from a branch</code>。</li>
-                <li><b>Branch</b>：選擇 <code>main</code> 與 <code>/(root)</code>，按下 <b>Save</b>。</li>
-            </ul>
-        </li>
-        <li>等待約 30 秒後重新整理頁面，頂部即會出現你的專屬公開網址（例：<code>https://username.github.io/crosswalk-ai-app/</code>）！</li>
-    </ol>
+                <div id="step3" class="card step-card p-4 mb-5">
+                    <div class="d-flex align-items-center mb-3">
+                        <span class="step-number">3</span>
+                        <h3 class="fw-bold mb-0 text-primary">GitHub Pages：網頁一鍵部署與成果展示</h3>
+                    </div>
+                    <p class="text-muted">將前端網頁 <code>index.html</code> 與剛下載的 <code>best.onnx</code> 檔案上傳至 GitHub，產出專屬的 AI 辨識網站！</p>
+                    
+                    <ol class="lh-lg mb-3">
+                        <li>登入 <a href="https://github.com/" target="_blank" class="fw-bold">GitHub</a>，點擊右上角 <b>+ -> New repository</b> 建立新的儲存庫（如：<code>crosswalk-ai-app</code>）。</li>
+                        <li><b>新增/上傳專案檔案</b>（可選擇以下任一方式）：
+                            <ul>
+                                <li><b>方式 A（直接貼上程式碼）</b>：點擊 <b>Creating a new file</b> ➔ 檔名輸入 <code>index.html</code> ➔ 將準備好的網頁程式碼直接複製貼入編輯區 ➔ 滑到最下方點擊 <b>Commit changes</b>。（同理可新建 <code>crosswalk.html</code>）</li>
+                                <li><b>方式 B（拖曳上傳現成檔案）</b>：點擊 <b>uploading an existing file</b> ➔ 將電腦中的 <code>index.html</code>、<code>crosswalk.html</code> 與從 Colab 下載的 <code>best.onnx</code> 一起拖曳上傳 ➔ 點擊 <b>Commit changes</b>。</li>
+                            </ul>
+                        </li>
+                        <li>進入儲存庫頂部的 <b>Settings -> 左側 Pages</b>：
+                            <ul>
+                                <li><b>Source</b>：選為 <code>Deploy from a branch</code>。</li>
+                                <li><b>Branch</b>：選擇 <code>main</code> 與 <code>/(root)</code>，按下 <b>Save</b>。</li>
+                            </ul>
+                        </li>
+                        <li>等待約 30 秒後重新整理頁面，頂部即會出現你的專屬公開網址（例：<code>https://username.github.io/crosswalk-ai-app/</code>）！</li>
+                    </ol>
 
-    <div class="alert alert-success mb-0 small">
-        🎉 <b>恭喜完成！</b>打開公開網址，直接滑到最下方上傳街景圖片，即可體驗純地端 Edge AI 的斑馬線辨識與幾何安全度自動評估！
+                    <div class="alert alert-success mb-0 small">
+                        🎉 <b>恭喜完成！</b>打開公開網址，直接滑到最下方上傳街景圖片，即可體驗純地端 Edge AI 的斑馬線辨識與幾何安全度自動評估！
+                    </div>
+                </div>
+
+            </div>
+        </div>
     </div>
-</div>
 
     <!-- 頁尾區塊 -->
     <footer class="bg-dark text-white text-center py-4 mt-5">
