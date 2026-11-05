@@ -20,20 +20,17 @@
             scroll-behavior: smooth;
         }
 
-        /* 頂部導覽列 */
         .navbar-custom {
             background-color: var(--primary-blue);
             box-shadow: 0 2px 10px rgba(0,0,0,0.15);
         }
 
-        /* Hero 主視覺 */
         .hero-banner {
             background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
             color: white;
             padding: 50px 20px 40px;
         }
 
-        /* 步驟卡片設計 */
         .step-card {
             border: none;
             border-radius: 12px;
@@ -58,7 +55,6 @@
             margin-right: 10px;
         }
 
-        /* 程式碼區塊風格 */
         .code-container {
             position: relative;
             background-color: #1e1e1e;
@@ -76,7 +72,6 @@
             font-size: 0.8rem;
         }
 
-        /* 浮動目錄導覽列 */
         .toc-card {
             position: sticky;
             top: 90px;
@@ -91,15 +86,12 @@
     <!-- 1. 導覽列 -->
     <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
         <div class="container">
-            <a class="navbar-brand fw-bold fs-4" href="#">
+            <a class="navbar-brand fw-bold fs-4" href="index.html">
                 🚦 AI 交通安全工作坊：三步走實作手冊
             </a>
             <a href="index.html" class="btn btn-warning fw-bold btn-sm ms-auto me-2" target="_blank">
-            🚀 開啟 AI 辨識系統
+                🚀 開啟 AI 辨識系統 (index.html)
             </a>
-            <div class="ms-auto d-none d-md-block">
-                <span class="badge bg-warning text-dark px-3 py-2 fw-bold">Roboflow ➔ Colab ➔ GitHub Pages</span>
-            </div>
         </div>
     </nav>
 
@@ -138,19 +130,20 @@
                         <span class="step-number">1</span>
                         <h3 class="fw-bold mb-0 text-primary">Roboflow：資料標註與資料集匯出</h3>
                     </div>
-                    <p class="text-muted">首先將收集好的 Google 街景圖片上傳至 Roboflow 平台進行標註，並匯出為 YOLO 訓練格式。</p>
+                    <p class="text-muted">將收集好的 Google 街景圖片上傳至 Roboflow 平台進行標註，並匯出為 YOLO 訓練格式。</p>
                     
                     <ol class="lh-lg mb-3">
                         <li>前往 <a href="https://roboflow.com/" target="_blank" class="fw-bold">Roboflow 官網</a> 註冊並登入帳號。</li>
                         <li>點擊 <b>Create New Project</b>，選擇專案類型為 <code>Object Detection</code>，將標註類別命名為 <code>crosswalk</code>（斑馬線）。</li>
-                        <li>將照片拖曳上傳，點選照片開啟標註工具，使用 <b>Bounding Box（畫框）</b> 緊密框住照片中的斑馬線。</li>
-                        <li>完成所有照片標註後，點擊左側 <b>Dataset -> Generate</b>：
+                        <li>點擊左側 <b>Annotate</b> 將照片拖曳上傳，點選照片開啟標註工具，使用 <b>Bounding Box（畫框）</b> 緊密框住照片中的斑馬線。</li>
+                        <li>完成所有照片標註後，點擊左側選單的 <b>Versions</b> ➔ 點擊 <b>Create New Version</b>：
                             <ul>
-                                <li><b>Preprocessing</b>：設定 Resize 為 <code>640x640</code>。</li>
+                                <li><b>Preprocessing</b>：設定 Resize 為 <code>640x640</code>（預設即有）。</li>
                                 <li><b>Augmentation</b>：可自由加入亮度（Brightness）或翻轉（Flip）等強化選項。</li>
+                                <li>點擊最下方 <b>Create</b> 產生版本。</li>
                             </ul>
                         </li>
-                        <li>點選 <b>Export Dataset</b> $\rightarrow$ 選擇格式為 <b>YOLOv8</b> $\rightarrow$ 選擇 <code>show download code</code> 並複製提示框中的 <b>Python Code</b>（包含你的 API Key）。</li>
+                        <li>版號產出後，點選右上角 <b>Export Dataset</b> ➔ 選擇格式為 <b>YOLOv8</b> ➔ 選擇 <code>show download code</code> 並複製提示框中的 <b>Python Code</b>（包含你的 API Key）。</li>
                     </ol>
 
                     <div class="alert alert-info mb-0 small">
@@ -197,7 +190,7 @@ print("✅ 模型匯出成功！請至左側資料夾下載 best.onnx 檔案。"
 
                     <ol class="lh-lg mb-0" start="4">
                         <li>點擊左側工具列的 **「檔案 (資料夾圖示)」**，依序展開選單：<br>
-                            <code>runs</code> $\rightarrow$ <code>detect</code> $\rightarrow$ <code>train</code> $\rightarrow$ <code>weights</code> $\rightarrow$ 找到 **`best.onnx`**。
+                            <code>runs</code> ➔ <code>detect</code> ➔ <code>train</code> ➔ <code>weights</code> ➔ 找到 **`best.onnx`**。
                         </li>
                         <li>在 **`best.onnx`** 上點擊右鍵選擇 **下載**，將模型檔儲存至個人電腦備用。</li>
                     </ol>
@@ -213,9 +206,10 @@ print("✅ 模型匯出成功！請至左側資料夾下載 best.onnx 檔案。"
                     
                     <ol class="lh-lg mb-3">
                         <li>登入 <a href="https://github.com/" target="_blank" class="fw-bold">GitHub</a>，點擊右上角 <b>+ -> New repository</b> 建立新的儲存庫（如：<code>crosswalk-ai-app</code>）。</li>
-                        <li>在專案頁面點擊 <b>uploading an existing file</b>，將以下兩個檔案同時拖曳上傳：
+                        <li>在專案頁面點擊 <b>uploading an existing file</b>，將以下檔案同時拖曳上傳：
                             <ul>
                                 <li><code>index.html</code>（包含前端與 JS ONNX Runtime 邏輯的網頁程式碼）</li>
+                                <li><code>crosswalk.html</code>（本教學手冊網頁）</li>
                                 <li><code>best.onnx</code>（剛從 Colab 下載的模型檔）</li>
                             </ul>
                         </li>
