@@ -136,10 +136,26 @@
                         <li>前往 <a href="https://roboflow.com/" target="_blank" class="fw-bold">Roboflow 官網</a> 註冊並登入帳號。</li>
                         <li>點擊 <b>Create New Project</b>，選擇專案類型為 <code>Object Detection</code>，將標註類別命名為 <code>crosswalk</code>（斑馬線）。</li>
                         <li>點擊左側 <b>Annotate</b> 將照片拖曳上傳，點選照片開啟標註工具，使用 <b>Bounding Box（畫框）</b> 緊密框住照片中的斑馬線。</li>
-                        <li>完成所有照片標註後，點擊左側選單的 <b>Versions</b> ➔ 點擊 <b>Create New Version</b>：
+                        <li><b>設定資料集分割比例 (Train / Valid / Test Split)</b>：<br>
+                            在匯出前將資料切分為：<b>70% 訓練集 (Train)</b>、<b>20% 驗證集 (Valid)</b>、<b>10% 測試集 (Test)</b>，以評估模型泛化能力。
+                        </li>
+                        <li>點擊左側選單的 <b>Versions</b> ➔ 點擊 <b>Create New Version</b> 設定影像預處理與資料增強：
                             <ul>
-                                <li><b>Preprocessing</b>：設定 Resize 為 <code>640x640</code>（預設即有）。</li>
-                                <li><b>Augmentation</b>：可自由加入亮度（Brightness）或翻轉（Flip）等強化選項。</li>
+                                <li><b>Preprocessing (預處理)</b>：
+                                    <ul>
+                                        <li>Auto-Orient: Applied</li>
+                                        <li>Resize: Stretch to <code>640x640</code></li>
+                                    </ul>
+                                </li>
+                                <li><b>Augmentations (資料增強 4 項)</b>：
+                                    <ul>
+                                        <li><b>Flip</b>: Horizontal（水平翻轉，模擬雙向車道視野）</li>
+                                        <li><b>Brightness</b>: Between <code>-15%</code> and <code>+15%</code>（模擬晴天與陰天光照）</li>
+                                        <li><b>Exposure</b>: Between <code>-15%</code> and <code>+15%</code>（模擬不同過曝與暗部環境）</li>
+                                        <li><b>Blur</b>: Up to <code>2.5px</code>（模擬行車動態模糊）</li>
+                                        <li>Outputs per training example: <code>3</code>（每張訓練圖片產出 3 張擴增影像）</li>
+                                    </ul>
+                                </li>
                                 <li>點擊最下方 <b>Create</b> 產生版本。</li>
                             </ul>
                         </li>
