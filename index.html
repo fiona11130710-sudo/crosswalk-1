@@ -398,34 +398,8 @@
                 ctx.fillText(text, box.x + 6, box.y - 8);
             });
         }
-
-// 5. 🔒 密碼驗證與啟動模型
-        function checkPasswordAndInit() {
-            const PASSWORD = "crosswalk2026"; // 🔑 這裡可自行修改為你們設定的密碼
-            let userPass = sessionStorage.getItem("app_authenticated");
-
-            while (userPass !== PASSWORD) {
-                userPass = prompt("🔒 本系統受權限保護，請輸入存取密碼以繼續：");
-                
-                // 使用者點選取消
-                if (userPass === null) {
-                    document.body.innerHTML = "<div style='text-align:center; margin-top:100px;'><h2>⛔ 存取被拒絕</h2><p>請重新整理網頁並輸入正確密碼。</p></div>";
-                    return;
-                }
-                
-                if (userPass !== PASSWORD) {
-                    alert("❌ 密碼錯誤，請再試一次！");
-                }
-            }
-
-            // 驗證成功，記錄 Session 並載入 ONNX 模型
-            sessionStorage.setItem("app_authenticated", PASSWORD);
-            initModel();
-        }
-
-        // 啟動驗證與模型
-        checkPasswordAndInit();
-    </script>
+        // 直接啟動 ONNX 模型（完全不需要密碼）
+        initModel();
     </script>
 </body>
 </html>
