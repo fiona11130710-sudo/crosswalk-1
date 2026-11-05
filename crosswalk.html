@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>交通安全 AI 科普計畫：AI 路口危險辨識與網頁發布實作手冊</title>
+    <!-- 引入 Bootstrap 5 CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- 引入 FontAwesome 圖標庫 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #1e3c72;
+            --secondary-blue: #2a5298;
+            --accent-yellow: #ffc107;
+            --light-bg: #f8f9fa;
+        }
+
+        body {
+            font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--light-bg);
+            color: #333;
+            scroll-behavior: smooth;
+        }
+
+        /* 導覽列 */
+        .navbar-custom {
+            background-color: var(--primary-blue);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 80px 20px 60px;
+            box-shadow: inset 0 -10px 20px rgba(0,0,0,0.1);
+        }
+
+        /* 章節標題 */
+        .section-header {
+            border-bottom: 3px solid var(--primary-blue);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        /* 卡片美化 */
+        .card-custom {
+            border: none;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            background: #fff;
+        }
+        .card-custom:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        /* 指標卡片 */
+        .stat-card-danger {
+            border-left: 5px solid #dc3545;
+            background-color: #fff5f5;
+        }
+        .stat-card-success {
+            border-left: 5px solid #198754;
+            background-color: #f0fff4;
+        }
+
+        /* 程式碼區塊樣式 */
+        .code-container {
+            position: relative;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            border-radius: 8px;
+            padding: 18px;
+            font-family: "Consolas", "Courier New", monospace;
+            font-size: 0.92rem;
+            overflow-x: auto;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 4px 10px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.4);
+        }
+
+        /* 步驟數字標籤 */
+        .step-number {
+            display: inline-block;
+            width: 32px;
+            height: 32px;
+            background-color: var(--primary-blue);
+            color: white;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 32px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        /* 回頁頂按鈕 */
+        #backToTop {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: none;
+            background: var(--primary-blue);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            cursor: pointer;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 頂部導覽列 -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-4" href="#">
+                🚦 AITS 交通安全 AI 科普手冊
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto fw-bold">
+                    <li class="nav-item"><a class="nav-link text-white" href="#unit1">街景採集 (80m)</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#unit2">Roboflow 標註 (75m)</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#unit3">Colab 訓練 (60m)</a></li>
+                    <li class="nav-item"><a class="nav-link text-white" href="#unit4">GitHub 部署 (60m)</a></li>
+                    <li class="nav-item"><a class="nav-link text-warning" href="#unit5">黑客松競賽 (45m)</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero 主視覺 Banner -->
+    <div class="hero-banner text-center">
+        <div class="container">
+            <span class="badge bg-warning text-dark px-3 py-2 mb-3 fw-bold fs-6 shadow-sm">AI 在交通安全科學之應用</span>
+            <h1 class="display-5 fw-bold mb-3">交通安全 AI 科普計畫：AI 路口危險辨識與網頁發布實作手冊</h1>
+            <p class="lead mx-auto" style="max-width: 820px; color: #e2e8f0; font-size: 1.15rem;">
+                從 Google 街景採集、Roboflow 標註、YOLO 模型訓練到 GitHub Pages 輕量化 Web AI 部署，帶你打造端到端智慧道路診斷系統。
+            </p>
+            <div class="mt-4">
+                <a href="#unit1" class="btn btn-warning btn-lg fw-bold px-4 me-2 shadow"><i class="fa-solid fa-rocket me-2"></i>開始學習</a>
+                <a href="#unit5" class="btn btn-outline-light btn-lg fw-bold px-4 shadow"><i class="fa-solid fa-trophy me-2"></i>黑客松任務</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-5">
+
+        <!-- 單元一 -->
+        <section id="unit1" class="mb-5 pt-4">
+            <h2 class="section-header"><i class="fa-solid fa-camera me-2"></i>單元一：交通安全導論與 Google 街景危險因子採集 (80 mins)</h2>
+            <div class="row g-4 mb-4">
+                <div class="col-md-6">
+                    <div class="card card-custom p-4 h-100">
+                        <h4 class="fw-bold text-primary mb-3">📐 靜態危險度評估標準 (Rule-Based)</h4>
+                        <p class="text-muted">本系統結合駕駛視野與空間幾何比例，定義兩大關鍵道路安全緩衝門檻：</p>
+
+                        <div class="stat-card-danger p-3 rounded-3 mb-3">
+                            <h6 class="fw-bold text-danger mb-1"><i class="fa-solid fa-triangle-exclamation me-1"></i> 視線盲區門檻 (&lt; 18%)</h6>
+                            <small class="text-secondary">斑馬線底邊距離影像底部小於總高度 18% 時，代表過於貼近轉角或車頭死角，判定為高風險。</small>
+                        </div>
+                        <div class="stat-card-danger p-3 rounded-3 mb-3">
+                            <h6 class="fw-bold text-danger mb-1"><i class="fa-solid fa-expand me-1"></i> 空間壓迫門檻 (&gt; 25%)</h6>
+                            <small class="text-secondary">斑馬線高度佔比超過影像總高度 25% 時，代表涵蓋近距離大面積視線盲區。</small>
+                        </div>
+                        <div class="stat-card-success p-3 rounded-3">
+                            <h6 class="fw-bold text-success mb-1"><i class="fa-solid fa-shield-halved me-1"></i> 安全退縮標準</h6>
+                            <small class="text-secondary">高於安全緩衝距離，符合道路退縮規範，駕駛擁有充足應變反應時間。</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-custom p-4 h-100">
+                        <h4 class="fw-bold text-primary mb-3">🌐 Google 街景資料採集步驟</h4>
+                        <p class="text-muted">模擬道路巡檢員，收集真實場景下的路口影像：</p>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item bg-transparent ps-0"><span class="step-number">1</span> 開啟 <a href="https://www.google.com/maps" target="_blank" class="fw-bold">Google Maps</a> 並拖曳小黃人進入街景視角。</li>
+                            <li class="list-group-item bg-transparent ps-0"><span class="step-number">2</span> 搜尋學校周邊、無號誌路口或轉角危險斑馬線。</li>
+                            <li class="list-group-item bg-transparent ps-0"><span class="step-number">3</span> 調整視角至駕駛車頭角度（模擬行車視野）。</li>
+                            <li class="list-group-item bg-transparent ps-0"><span class="step-number">4</span> 截取 10-15 張 JPG 格式街景圖片備用。</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 單元二 -->
+        <section id="unit2" class="mb-5 pt-4">
+            <h2 class="section-header"><i class="fa-solid fa-tags me-2"></i>單元二：Roboflow 影像標註與資料集建立 (75 mins)</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card card-custom p-4 h-100 text-center">
+                        <div class="fs-1 text-primary mb-2"><i class="fa-solid fa-folder-plus"></i></div>
+                        <h5 class="fw-bold">1. 建立專案</h5>
+                        <p class="text-muted small">選擇 <b>Object Detection</b>，並將 Detection Target 命名為 <code>crosswalk</code>。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom p-4 h-100 text-center">
+                        <div class="fs-1 text-primary mb-2"><i class="fa-solid fa-vector-square"></i></div>
+                        <h5 class="fw-bold">2. 標註規範</h5>
+                        <p class="text-muted small">框選斑馬線（Crosswalk）邊界，需拉框緊貼邊緣，不遺漏任何特徵。</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom p-4 h-100 text-center">
+                        <div class="fs-1 text-primary mb-2"><i class="fa-solid fa-sliders"></i></div>
+                        <h5 class="fw-bold">3. 預處理與擴充</h5>
+                        <p class="text-muted small">設定 Resize 640x640，加入 Brightness 與 Flip 強化模型泛化能力。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 單元三 -->
+        <section id="unit3" class="mb-5 pt-4">
+            <h2 class="section-header"><i class="fa-solid fa-microchip me-2"></i>單元三：Google Colab 模型訓練與 ONNX 轉換 (60 mins)</h2>
+            <div class="card card-custom p-4 mb-4">
+                <p class="text-muted mb-3">請在 Google Colab（開啟 T4 GPU 算力）中貼上並執行以下 Python 訓練與匯出腳本：</p>
+
+                <div class="code-container">
+                    <button class="copy-btn" onclick="copyCode('colabCode', this)"><i class="fa-regular fa-copy"></i> 複製程式碼</button>
+                    <pre><code id="colabCode"># 1. 安裝 Ultralytics (YOLO) 與 Roboflow SDK
+!pip install ultralytics roboflow
+
+# 2. 下載 Roboflow 標註好的資料集
+from roboflow import Roboflow
+rf = Roboflow(api_key="YOUR_ROBOFLOW_API_KEY")
+project = rf.workspace("aits-workshop").project("crosswalk-detection")
+dataset = project.version(1).download("yolov8")
+
+# 3. 啟動 YOLO 模型訓練
+from ultralytics import YOLO
+model = YOLO('yolov8n.pt') # 載入輕量化預訓練權重
+results = model.train(data=f"{dataset.location}/data.yaml", epochs=30, imgsz=640)
+
+# 4. 匯出跨平台 Web 專用 ONNX 格式
+success = model.export(format='onnx')
+print("✅ 模型轉換完成！請下載 runs/detect/train/weights/best.onnx")</code></pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- 單元四 -->
+        <section id="unit4" class="mb-5 pt-4">
+            <h2 class="section-header"><i class="fa-brands fa-github me-2"></i>單元四：GitHub Pages 一頁式 Web AI 部署 (60 mins)</h2>
+            <div class="row g-4 mb-4">
+                <div class="col-lg-6">
+                    <div class="card card-custom p-4 h-100">
+                        <h4 class="fw-bold text-primary mb-3">🚀 GitHub Pages 發布流程</h4>
+                        <ol class="list-group list-group-numbered list-group-flush">
+                            <li class="list-group-item bg-transparent">建立公開儲存庫（Repository），命名為 <code>crosswalk-ai</code>。</li>
+                            <li class="list-group-item bg-transparent">點選 <b>Add file -&gt; Upload files</b>，上傳 <code>index.html</code> 與 <code>best.onnx</code>。</li>
+                            <li class="list-group-item bg-transparent">進入 <b>Settings -&gt; Pages</b>，Source 選擇 <code>Deploy from a branch</code>。</li>
+                            <li class="list-group-item bg-transparent">Branch 設定為 <code>main</code> / <code>/(root)</code>，按下 <b>Save</b> 完成免費發布。</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="card card-custom p-4 h-100">
+                        <h4 class="fw-bold text-primary mb-3">💻 前端核心決策邏輯 (JS)</h4>
+                        <div class="code-container">
+                            <button class="copy-btn" onclick="copyCode('jsLogicCode', this)"><i class="fa-regular fa-copy"></i> 複製程式碼</button>
+                            <pre><code id="jsLogicCode">// ONNX 辨識與 Rule-Based 風險評估
+const isHighRisk = (distToBottom < imgHeight * 0.18) || (boxHeightRatio > 0.25);
+const riskStatus = isHighRisk ? "🔴 高風險（離底過近/盲區死角）" : "🟢 安全（退縮良好）";
+
+// 提示改善建議
+const suggestion = isHighRisk 
+    ? "⚠️ 建議向後退縮 3~5 公尺以提升視野。"
+    : "✅ 佈局符合標準退縮規範。";</code></pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 單元五 -->
+        <section id="unit5" class="mb-5 pt-4">
+            <h2 class="section-header text-warning"><i class="fa-solid fa-trophy me-2"></i>單元五：成果發表與黑客松競賽銜接 (45 mins)</h2>
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card card-custom p-4 h-100 border-top border-warning border-4">
+                        <h4 class="fw-bold text-dark"><i class="fa-solid fa-eye me-2 text-warning"></i>任務 A：AI 金眼獎</h4>
+                        <p class="text-muted mt-2">模型極限挑戰賽！將學員訓練好的 ONNX 模型上傳至統一驗證關卡，測試 50 張魔王級各類視角街景，挑戰最高的 mAP 辨識精準度。</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card card-custom p-4 h-100 border-top border-primary border-4">
+                        <h4 class="fw-bold text-dark"><i class="fa-solid fa-map-location-dot me-2 text-primary"></i>任務 B：我的路口我守護</h4>
+                        <p class="text-muted mt-2">產出 PDF 診斷報告書與 GitHub Pages 網址！針對校園周邊高風險路口提出完整的道路硬體改善提案與 AI 網頁實測證明。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- 頁尾 -->
+    <footer class="bg-dark text-white text-center py-4">
+        <div class="container">
+            <p class="mb-1 fw-bold">🚦 交通安全 AI 科普計畫 &copy; 2026 All Rights Reserved.</p>
+            <small class="text-white-50">人工智慧在交通安全科學之應用展示教學手冊</small>
+        </div>
+    </footer>
+
+    <!-- 回頂部按鈕 -->
+    <button id="backToTop" onclick="scrollToTop()"><i class="fa-solid fa-arrow-up"></i></button>
+
+    <!-- JavaScript 腳本 -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // 一鍵複製 Code 功能
+        function copyCode(elementId, btn) {
+            const codeText = document.getElementById(elementId).innerText;
+            const tempTextArea = document.createElement("textarea");
+            tempTextArea.value = codeText;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand("copy");
+            document.body.removeChild(tempTextArea);
+
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> 已複製！';
+            setTimeout(() => {
+                btn.innerHTML = originalText;
+            }, 2000);
+        }
+
+        // 回頂部按鈕滾動監聽
+        window.onscroll = function() {
+            const btn = document.getElementById("backToTop");
+            if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+                btn.style.display = "block";
+            } else {
+                btn.style.display = "none";
+            }
+        };
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
