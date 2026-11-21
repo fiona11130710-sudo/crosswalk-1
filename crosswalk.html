@@ -133,11 +133,10 @@
                     <p class="text-muted">為節省重複標註時間，我們已為大家準備好 <b>80 張已標註完成</b>的台灣路口街景資料包！你只需要匯入這批資料，再額外挑選 <b>1～2 張</b> 自己喜歡的街景照片親手完成標註即可。</p>
                     
                     <ol class="lh-lg mb-3">
-                        <li>下載並解壓縮工作坊提供的<b>「基礎街景資料集（80 張圖與標註檔）」</b>，同時上 Google 街景截圖或找 <b>1～2 張</b> 包含斑馬線／紅綠燈的路口照片。</li>
+                        <li>解壓縮工作坊提供的「80 張基礎資料集」，並另外從 Google 街景找 1～2 張新的路口照片。</li>
                         <li>前往 <a href="https://roboflow.com/" target="_blank" class="fw-bold">Roboflow 官網</a> 註冊並登入帳號。</li>
-                        <li>點擊 <b>Create New Project</b>，選擇專案類型為 <code>Object Detection</code>，建立標註類別（例如 <code>crosswalk</code> 斑馬線、<code>traffic light</code> 紅綠燈）。</li>
-                        <li><b>先匯入 80 張基礎資料集</b>：點擊左側 <b>Upload Data</b>，將解壓縮後的 80 張圖片與對應的標註資料夾整個拖曳上傳並儲存（系統會自動帶入現有框線）。</li>
-                        <li><b>親手標註 1～2 張自選照片</b>：將你額外找的 1～2 張新照片上傳，點擊左側 <b>Annotate</b> 開啟標註工具，使用 <b>Bounding Box（畫框）</b> 緊密框住照片中的斑馬線與紅綠燈。</li>
+                        <li>點擊 <b>Create New Project</b>，選擇專案類型為 <code>Object Detection</code>，建立標註類別（例如 <code>crosswalk</code> 斑馬線</li>
+                        <li>點擊 Upload Data 把剛剛準備的所有資料一起拖曳上傳並儲存（80 張會自動帶入標註框），接著點左側 Annotate，幫你額外找的那 1～2 張新照片畫框即可。</li>
                         <li><b>設定資料集分割比例 (Train / Valid / Test Split)</b>：<br>
                             在匯出前確認資料切分為：<b>70% 訓練集 (Train)</b>、<b>20% 驗證集 (Valid)</b>、<b>10% 測試集 (Test)</b>，確保訓練與驗證集都有充足樣本。
                         </li>
