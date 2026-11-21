@@ -90,7 +90,7 @@
                 🚦 AI 交通安全工作坊：三步走實作手冊
             </a>
             <a href="index.html" class="btn btn-warning fw-bold btn-sm ms-auto me-2">
-                🚀 開啟 AI 辨識系統 (index.html)
+                🚀 返回系統入口首頁
             </a>
         </div>
     </nav>
@@ -100,7 +100,7 @@
         <div class="container">
             <h1 class="display-6 fw-bold mb-3">從零打造 AI 道路安全辨識網頁</h1>
             <p class="lead mx-auto" style="max-width: 750px; color: #e2e8f0; font-size: 1.1rem;">
-                不需安裝任何電腦軟體！只需透過瀏覽器，依序完成 **Roboflow 資料標註**、**Google Colab 雲端訓練** 與 **GitHub Pages 一鍵發布**。
+                不需安裝任何電腦軟體！使用工作坊提供的<b>基礎街景資料包（80 張）</b>搭配自選實拍圖，依序完成 <b>Roboflow 資料擴充</b>、<b>Google Colab 一鍵訓練</b> 與 <b>GitHub Pages 網頁發布</b>。
             </p>
         </div>
     </div>
@@ -114,7 +114,7 @@
                 <div class="card toc-card p-3 bg-white">
                     <h6 class="fw-bold text-primary mb-3">📍 實作步驟目錄</h6>
                     <div class="list-group list-group-flush small">
-                        <a href="#step1" class="list-group-item list-group-item-action border-0 ps-0">1. Roboflow 標註與匯出</a>
+                        <a href="#step1" class="list-group-item list-group-item-action border-0 ps-0">1. Roboflow 匯入與補標註</a>
                         <a href="#step2" class="list-group-item list-group-item-action border-0 ps-0">2. Google Colab 模型訓練</a>
                         <a href="#step3" class="list-group-item list-group-item-action border-0 ps-0">3. GitHub Pages 網頁發布</a>
                     </div>
@@ -128,16 +128,18 @@
                 <div id="step1" class="card step-card p-4 mb-4">
                     <div class="d-flex align-items-center mb-3">
                         <span class="step-number">1</span>
-                        <h3 class="fw-bold mb-0 text-primary">Roboflow：資料標註與資料集匯出</h3>
+                        <h3 class="fw-bold mb-0 text-primary">Roboflow：匯入基礎資料包與自選圖標註</h3>
                     </div>
-                    <p class="text-muted">將收集好的 Google 街景圖片上傳至 Roboflow 平台進行標註，並匯出為 YOLO 訓練格式。</p>
+                    <p class="text-muted">為節省重複標註時間，我們已為大家準備好 <b>80 張已標註完成</b>的台灣路口街景資料包！你只需要匯入這批資料，再額外挑選 <b>1～2 張</b> 自己喜歡的街景照片親手完成標註即可。</p>
                     
                     <ol class="lh-lg mb-3">
+                        <li>下載並解壓縮工作坊提供的<b>「基礎街景資料集（80 張圖與標註檔）」</b>，同時上 Google 街景截圖或找 <b>1～2 張</b> 包含斑馬線／紅綠燈的路口照片。</li>
                         <li>前往 <a href="https://roboflow.com/" target="_blank" class="fw-bold">Roboflow 官網</a> 註冊並登入帳號。</li>
-                        <li>點擊 <b>Create New Project</b>，選擇專案類型為 <code>Object Detection</code>，將標註類別命名為 <code>crosswalk</code>（斑馬線）。</li>
-                        <li>點擊左側 <b>Annotate</b> 將照片拖曳上傳，點選照片開啟標註工具，使用 <b>Bounding Box（畫框）</b> 緊密框住照片中的斑馬線。</li>
+                        <li>點擊 <b>Create New Project</b>，選擇專案類型為 <code>Object Detection</code>，建立標註類別（例如 <code>crosswalk</code> 斑馬線、<code>traffic light</code> 紅綠燈）。</li>
+                        <li><b>先匯入 80 張基礎資料集</b>：點擊左側 <b>Upload Data</b>，將解壓縮後的 80 張圖片與對應的標註資料夾整個拖曳上傳並儲存（系統會自動帶入現有框線）。</li>
+                        <li><b>親手標註 1～2 張自選照片</b>：將你額外找的 1～2 張新照片上傳，點擊左側 <b>Annotate</b> 開啟標註工具，使用 <b>Bounding Box（畫框）</b> 緊密框住照片中的斑馬線與紅綠燈。</li>
                         <li><b>設定資料集分割比例 (Train / Valid / Test Split)</b>：<br>
-                            在匯出前將資料切分為：<b>70% 訓練集 (Train)</b>、<b>20% 驗證集 (Valid)</b>、<b>10% 測試集 (Test)</b>，以評估模型泛化能力。
+                            在匯出前確認資料切分為：<b>70% 訓練集 (Train)</b>、<b>20% 驗證集 (Valid)</b>、<b>10% 測試集 (Test)</b>，確保訓練與驗證集都有充足樣本。
                         </li>
                         <li>點擊左側選單的 <b>Versions</b> ➔ 點擊 <b>Create New Version</b> 設定影像預處理與資料增強：
                             <ul>
@@ -163,7 +165,7 @@
                     </ol>
 
                     <div class="alert alert-info mb-0 small">
-                        💡 <b>提示：</b>請將複製好的 Roboflow 下載程式碼妥善保存，待會將貼入 Step 2 的 Colab 中執行！
+                        💡 <b>提示：</b>匯入 80 張基礎資料包能確保訓練集與驗證集樣本充足、辨識率穩定；記得將複製好的 Roboflow 下載程式碼妥善保存，待會直接貼入 Step 2 的 Colab 中執行！
                     </div>
                 </div>
 
@@ -171,24 +173,24 @@
                 <div id="step2" class="card step-card p-4 mb-4">
                     <div class="d-flex align-items-center mb-3">
                         <span class="step-number">2</span>
-                        <h3 class="fw-bold mb-0 text-primary">Google Colab：GPU 雲端模型訓練與 ONNX 轉換</h3>
+                        <h3 class="fw-bold mb-0 text-primary">Google Colab：GPU 雲端模型訓練與 ONNX 自動下載</h3>
                     </div>
-                    <p class="text-muted">利用 Google 提供的免費 GPU 算力訓練 YOLO 模型，並匯出為瀏覽器專用的 <code>best.onnx</code> 檔。</p>
+                    <p class="text-muted">利用 Google 提供的免費 GPU 算力一鍵訓練 YOLO 模型，並自動轉換與下載瀏覽器專用的 <code>best.onnx</code> 檔。</p>
                     
                     <ol class="lh-lg mb-3">
                         <li>開啟 <a href="https://colab.research.google.com/" target="_blank" class="fw-bold">Google Colab</a>，建立一份「新增筆記本」。</li>
                         <li>確認已開啟 GPU 加速：點選上方選單 <b>執行階段 -> 變更執行階段類型 -> 選擇 T4 GPU</b>。</li>
-                        <li>將下方完整的 Python 腳本複製並貼入 Colab 的程式碼區塊中：</li>
+                        <li>將下方完整的 Python 腳本複製並貼入 Colab 的程式碼區塊中（記得替換成你自己的 Roboflow 下載碼），點擊左側播放鍵執行：</li>
                     </ol>
 
                     <!-- Colab 腳本區塊 -->
                     <div class="code-container mb-3">
                         <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyCode()">📋 複製程式碼</button>
 <pre id="python-code"><code># 1. 安裝 Ultralytics (YOLO) 與 Roboflow 套件
-!pip install ultralytics roboflow
+!pip install -q ultralytics roboflow
 
 # 2. 貼上你在 Step 1 複製的 Roboflow 下載程式碼
-# (請將下方程式碼替換為你個人專屬的 Roboflow Code)
+# (請將下方 3 行替換為你個人專屬的 Roboflow Code)
 from roboflow import Roboflow
 rf = Roboflow(api_key="YOUR_API_KEY")
 project = rf.workspace("YOUR_WORKSPACE").project("YOUR_PROJECT")
@@ -199,36 +201,37 @@ from ultralytics import YOLO
 model = YOLO('yolo26n.pt')
 results = model.train(data=f"{dataset.location}/data.yaml", epochs=30, imgsz=640)
 
-# 4. 將訓練完成的模型轉換為 Web 專用的 ONNX 格式
-success = model.export(format='onnx')
-print("✅ 模型匯出成功！請至左側資料夾下載 best.onnx 檔案。")</code></pre>
+# 4. 轉換為 Web 專用的 ONNX 格式並自動觸發瀏覽器下載
+onnx_path = model.export(format='onnx', imgsz=640)
+print(f"✅ 模型匯出成功！檔案位置：{onnx_path}")
+
+from google.colab import files
+files.download(onnx_path)</code></pre>
                     </div>
 
                     <ol class="lh-lg mb-0" start="4">
-                        <li>點擊左側工具列的 **「檔案 (資料夾圖示)」**，依序展開選單：<br>
-                            <code>runs</code> ➔ <code>detect</code> ➔ <code>train</code> ➔ <code>weights</code> ➔ 找到 **`best.onnx`**。
-                        </li>
-                        <li>在 **`best.onnx`** 上點擊右鍵選擇 **下載**，將模型檔儲存至個人電腦備用。</li>
+                        <li>訓練與匯出完成後，瀏覽器會<b>自動彈出下載視窗</b>將 <code>best.onnx</code> 存到電腦的「下載」資料夾中。</li>
+                        <li>（備案）若瀏覽器阻擋自動下載，可點擊 Colab 左側工具列的 <b>「檔案 (資料夾圖示)」</b> ➔ 依序展開 <code>runs/detect/train/weights/</code> ➔ 在 <code>best.onnx</code> 上按右鍵選擇<b>下載</b>即可。</li>
                     </ol>
                 </div>
 
-<!-- Step 3: GitHub Pages -->
+                <!-- Step 3: GitHub Pages -->
                 <div id="step3" class="card step-card p-4 mb-5">
                     <div class="d-flex align-items-center mb-3">
                         <span class="step-number">3</span>
                         <h3 class="fw-bold mb-0 text-primary">GitHub Pages：網頁一鍵部署與成果展示</h3>
                     </div>
-                    <p class="text-muted">將前端網頁 <code>index.html</code> 與剛下載的 <code>best.onnx</code> 檔案上傳至 GitHub，產出專屬的 AI 辨識網站！</p>
+                    <p class="text-muted">將前端網頁與剛下載的 <code>best.onnx</code> 檔案上傳至 GitHub，產出專屬的 AI 辨識網站！</p>
                     
                     <ol class="lh-lg mb-3">
                         <li>登入 <a href="https://github.com/" target="_blank" class="fw-bold">GitHub</a>，點擊右上角 <b>+ -> New repository</b> 建立新的儲存庫（如：<code>crosswalk-ai-app</code>）。</li>
                         <li><b>新增/上傳專案檔案</b>（可選擇以下任一方式）：
                             <ul>
-                                <li><b>方式 A（直接貼上程式碼）</b>：點擊 <b>Creating a new file</b> ➔ 檔名輸入 <code>index.html</code> ➔ 將準備好的網頁程式碼直接複製貼入編輯區 ➔ 滑到最下方點擊 <b>Commit changes</b>。（同理可新建 <code>crosswalk.html</code>）</li>
-                                <li><b>方式 B（拖曳上傳現成檔案）</b>：點擊 <b>uploading an existing file</b> ➔ 將電腦中的 <code>index.html</code>與從 Colab 下載的 <code>best.onnx</code> 一起拖曳上傳 ➔ 點擊 <b>Commit changes</b>。</li>
+                                <li><b>方式 A（直接貼上程式碼）</b>：點擊 <b>Creating a new file</b> ➔ 檔名輸入 <code>index.html</code> ➔ 將準備好的網頁程式碼直接複製貼入編輯區 ➔ 滑到最下方點擊 <b>Commit changes</b>。</li>
+                                <li><b>方式 B（拖曳上傳現成檔案）</b>：點擊 <b>uploading an existing file</b> ➔ 將電腦中的網頁檔案與從 Colab 下載的 <code>best.onnx</code> 一起拖曳上傳 ➔ 點擊 <b>Commit changes</b>。</li>
                             </ul>
                         </li>
-                        <li>進入儲存庫頂部的 <b>Settings -> 左側 Pages</b>：0
+                        <li>進入儲存庫頂部的 <b>Settings -> 左側 Pages</b>：
                             <ul>
                                 <li><b>Source</b>：選為 <code>Deploy from a branch</code>。</li>
                                 <li><b>Branch</b>：選擇 <code>main</code> 與 <code>/(root)</code>，按下 <b>Save</b>。</li>
@@ -240,7 +243,7 @@ print("✅ 模型匯出成功！請至左側資料夾下載 best.onnx 檔案。"
                     </ol>
 
                     <div class="alert alert-success mb-0 small">
-                        🎉 <b>恭喜完成！</b>打開公開網址，直接滑到最下方上傳街景圖片，即可體驗純地端 Edge AI 的斑馬線辨識與幾何安全度自動評估！
+                        🎉 <b>恭喜完成！</b>打開公開網址，上傳你剛剛自選的街景圖片，即可體驗純地端 Edge AI 的斑馬線與紅綠燈辨識及安全度自動評估！
                     </div>
                 </div>
 
