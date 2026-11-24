@@ -166,7 +166,7 @@
                                 <li>點擊最下方 <b>Create</b> 產生版本。</li>
                             </ul>
                         </li>
-                        <li>版號產出後，點選右上角 <b>Export Dataset</b> ➔ 選擇格式為 <b>YOLOv8</b> ➔ 選擇 <code>show download code</code> 並複製提示框中的 <b>Python Code</b>（包含你的 API Key）。</li>
+                        <li>版號產出後，點選右上角 <b>Export Dataset</b> ➔ 選擇格式為 <b>YOLO26</b> ➔ 選擇 <code>show download code</code> 並複製提示框中的 <b>Python Code</b>（包含你的 API Key）。</li>
                     </ol>
 
                     <div class="alert alert-info mb-0 small">
@@ -199,7 +199,7 @@
 from roboflow import Roboflow
 rf = Roboflow(api_key="YOUR_API_KEY")
 project = rf.workspace("YOUR_WORKSPACE").project("YOUR_PROJECT")
-dataset = project.version(1).download("yolov8")
+dataset = project.version(1).download("yolo26")
 
 # 3. 載入輕量化模型並開始訓練 (以 30 個 Epochs 為例)
 from ultralytics import YOLO
