@@ -141,7 +141,7 @@
                         </li>
                         <li>解壓縮工作坊提供的「80 張基礎資料集」，並另外從 Google 街景找 1～2 張新的路口照片。</li>
                         <li>前往 <a href="https://roboflow.com/" target="_blank" class="fw-bold">Roboflow 官網</a> 註冊並登入帳號。</li>
-                        <li>點擊 <b>Create New Project</b>，選擇專案類型為 <code>Object Detection</code>，建立標註類別（例如 <code>crosswalk</code> 斑馬線</li>
+                        <li>點擊 <b>Create New Project</b>，選擇專案類型為 <code>Object Detection</code>，建立標註類別（例如 <code>crosswalk</code> 斑馬線)</li>
                         <li>點擊 Upload Data 把剛剛準備的所有資料一起拖曳上傳並儲存（80 張會自動帶入標註框），接著點左側 Annotate，幫你額外找的那 1～2 張新照片畫框即可。</li>
                         <li><b>設定資料集分割比例 (Train / Valid / Test Split)</b>：<br>
                             在匯出前確認資料切分為：<b>70% 訓練集 (Train)</b>、<b>20% 驗證集 (Valid)</b>、<b>10% 測試集 (Test)</b>，確保訓練與驗證集都有充足樣本。
@@ -222,35 +222,39 @@ files.download(onnx_path)</code></pre>
 
                 <!-- Step 3: GitHub Pages -->
                 <div id="step3" class="card step-card p-4 mb-5">
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="step-number">3</span>
-                        <h3 class="fw-bold mb-0 text-primary">GitHub Pages：網頁一鍵部署與成果展示</h3>
-                    </div>
-                    <p class="text-muted">將前端網頁與剛下載的 <code>best.onnx</code> 檔案上傳至 GitHub，產出專屬的 AI 辨識網站！</p>
-                    
-                    <ol class="lh-lg mb-3">
-                        <li>登入 <a href="https://github.com/" target="_blank" class="fw-bold">GitHub</a>，點擊右上角 <b>+ -> New repository</b> 建立新的儲存庫（如：<code>crosswalk-ai-app</code>）。</li>
-                        <li><b>新增/上傳專案檔案</b>（可選擇以下任一方式）：
-                            <ul>
-                                <li><b>方式 A（直接貼上程式碼）</b>：點擊 <b>Creating a new file</b> ➔ 檔名輸入 <code>index.html</code> ➔ 將準備好的網頁程式碼直接複製貼入編輯區 ➔ 滑到最下方點擊 <b>Commit changes</b>。</li>
-                                <li><b>方式 B（拖曳上傳現成檔案）</b>：點擊 <b>uploading an existing file</b> ➔ 將電腦中的網頁檔案與從 Colab 下載的 <code>best.onnx</code> 一起拖曳上傳 ➔ 點擊 <b>Commit changes</b>。</li>
-                            </ul>
-                        </li>
-                        <li>進入儲存庫頂部的 <b>Settings -> 左側 Pages</b>：
-                            <ul>
-                                <li><b>Source</b>：選為 <code>Deploy from a branch</code>。</li>
-                                <li><b>Branch</b>：選擇 <code>main</code> 與 <code>/(root)</code>，按下 <b>Save</b>。</li>
-                            </ul>
-                        </li>
-                        <li><b>確認網頁部署進度 (Actions)</b>：<br>
-                            可點擊儲存庫頂部的 <b>Actions</b> 頁籤，查看 <code>pages-build-deployment</code> 是否出現綠色勾勾 <code>✅</code>。完成後頂部即會出現專屬公開網址（例：<code>https://username.github.io/crosswalk-ai-app/</code>）！
-                        </li>
-                    </ol>
+    <div class="d-flex align-items-center mb-3">
+        <span class="step-number">3</span>
+        <h3 class="fw-bold mb-0 text-primary">GitHub Pages：網頁一鍵部署與成果展示</h3>
+    </div>
+    <p class="text-muted">將前端網頁與剛下載的 <code>best.onnx</code> 檔案上傳至 GitHub，產出專屬的 AI 辨識網站！</p>
+    
+    <ol class="lh-lg mb-3">
+        <li>登入 <a href="https://github.com/" target="_blank" class="fw-bold">GitHub</a>，點擊右上角 <b>+ -> New repository</b> 建立新的儲存庫（如：<code>crosswalk-ai-app</code>）。</li>
+        <li><b>新增/上傳專案檔案</b>（可選擇以下任一方式）：
+            <ul>
+                <li><b>方式 A（直接貼上程式碼）</b>：點擊前往 
+                    <a href="https://docs.google.com/document/d/1ZLcEkPahzTQdOy3z9SCDnJcu4SD5C0L6bRYI8TMTFlY/edit?usp=sharing" target="_blank" class="fw-bold text-decoration-underline">
+                    📄 複製前端網頁程式碼 (Google Docs)
+                    </a> ➔ 回到 GitHub 點擊 <b>Creating a new file</b> ➔ 檔名輸入 <code>index.html</code> 並貼入程式碼 ➔ 按下 <b>Commit changes</b> 後，再點擊 <b>Add file -> Upload files</b> 上傳 <code>best.onnx</code>。
+                </li>
+                <li><b>方式 B（拖曳上傳現成檔案）</b>：點擊 <b>uploading an existing file</b> ➔ 將電腦中的網頁檔案與從 Colab 下載的 <code>best.onnx</code> 一起拖曳上傳 ➔ 點擊 <b>Commit changes</b>。</li>
+            </ul>
+        </li>
+        <li>進入儲存庫頂部的 <b>Settings -> 左側 Pages</b>：
+            <ul>
+                <li><b>Source</b>：選為 <code>Deploy from a branch</code>。</li>
+                <li><b>Branch</b>：選擇 <code>main</code> 與 <code>/(root)</code>，按下 <b>Save</b>。</li>
+            </ul>
+        </li>
+        <li><b>確認網頁部署進度 (Actions)</b>：<br>
+            可點擊儲存庫頂部的 <b>Actions</b> 頁籤，查看 <code>pages-build-deployment</code> 是否出現綠色勾勾 <code>✅</code>。完成後頂部即會出現專屬公開網址（例：<code>https://username.github.io/crosswalk-ai-app/</code>）！
+        </li>
+    </ol>
 
-                    <div class="alert alert-success mb-0 small">
-                        🎉 <b>恭喜完成！</b>打開公開網址，上傳你剛剛自選的街景圖片，即可體驗純地端 Edge AI 的斑馬線與紅綠燈辨識及安全度自動評估！
-                    </div>
-                </div>
+    <div class="alert alert-success mb-0 small">
+        🎉 <b>恭喜完成！</b>打開公開網址，上傳你剛剛自選的街景圖片，即可體驗純地端 Edge AI 的斑馬線辨識及安全度自動評估！
+    </div>
+</div>
 
             </div>
         </div>
