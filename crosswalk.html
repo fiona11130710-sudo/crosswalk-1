@@ -230,16 +230,21 @@ files.download(onnx_path)</code></pre>
     
     <ol class="lh-lg mb-3">
         <li>登入 <a href="https://github.com/" target="_blank" class="fw-bold">GitHub</a>，點擊右上角 <b>+ -> New repository</b> 建立新的儲存庫（如：<code>crosswalk-ai-app</code>）。</li>
-        <li><b>新增/上傳專案檔案</b>（可選擇以下任一方式）：
+        <li><b>生成網頁並上傳至 GitHub</b>：
+            <ol type="a" class="mt-1">
+            <li>點擊前往 
+            <a href="https://docs.google.com/document/d/1ZLcEkPahzTQdOy3z9SCDnJcu4SD5C0L6bRYI8TMTFlY/edit?usp=sharing" target="_blank" class="fw-bold text-decoration-underline">
+                📄 複製 AI 網頁生成提示詞 (Google Docs)
+            </a>，將內容完整貼給 <b>ChatGPT / Gemini</b>，讓 AI 幫你產生 <code>index.html</code> 程式碼。
+            </li>
+        <li>取得程式碼後，透過以下任一方式放到 GitHub（<b>務必確認 <code>index.html</code> 與 <code>best.onnx</code> 都在同一個儲存庫裡</b>）：
             <ul>
-                <li><b>方式 A（直接貼上程式碼）</b>：點擊前往 
-                    <a href="https://docs.google.com/document/d/1ZLcEkPahzTQdOy3z9SCDnJcu4SD5C0L6bRYI8TMTFlY/edit?usp=sharing" target="_blank" class="fw-bold text-decoration-underline">
-                    📄 複製前端網頁程式碼 (Google Docs)
-                    </a> ➔ 回到 GitHub 點擊 <b>Creating a new file</b> ➔ 檔名輸入 <code>index.html</code> 並貼入程式碼 ➔ 按下 <b>Commit changes</b> 後，再點擊 <b>Add file -> Upload files</b> 上傳 <code>best.onnx</code>。
-                </li>
-                <li><b>方式 B（拖曳上傳現成檔案）</b>：點擊 <b>uploading an existing file</b> ➔ 將電腦中的網頁檔案與從 Colab 下載的 <code>best.onnx</code> 一起拖曳上傳 ➔ 點擊 <b>Commit changes</b>。</li>
+                <li><b>方式 A（直接貼上程式碼）</b>：在 GitHub 點擊 <b>Creating a new file</b> ➔ 檔名輸入 <code>index.html</code> 並貼入程式碼 ➔ 按下 <b>Commit changes</b> 後，再點擊 <b>Add file -> Upload files</b> 上傳 <code>best.onnx</code>。</li>
+                <li><b>方式 B（本機存檔後一起上傳）</b>：將 AI 產生的程式碼存成電腦中的 <code>index.html</code> ➔ 在 GitHub 點擊 <b>uploading an existing file</b>，將 <code>index.html</code> 與 <code>best.onnx</code> 一起拖曳上傳並按下 <b>Commit changes</b>。</li>
             </ul>
         </li>
+    </ol>
+</li>
         <li>進入儲存庫頂部的 <b>Settings -> 左側 Pages</b>：
             <ul>
                 <li><b>Source</b>：選為 <code>Deploy from a branch</code>。</li>
