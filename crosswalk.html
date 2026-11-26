@@ -1,196 +1,555 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI 交通安全工作坊：Roboflow -> Colab -> GitHub Pages 實作手冊</title>
-    <!-- 引入 Bootstrap 5 CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-blue: #1e3c72;
-            --secondary-blue: #2a5298;
-            --accent-gold: #ffc107;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>校園安全小隊｜新手訓練營：Roboflow ➔ Colab ➔ GitHub Pages 實作手冊</title>
+  <!-- Google Fonts：與首頁同系列字體，確保家族一致感 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=M+PLUS+Rounded+1c:wght@500;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      /* 延續主色系，但反轉明暗比例：以「米白 + 森林綠」為主體手冊底，搭配「深藍 + 夕陽橘 + 霓虹藍紫」做章節徽章與程式碼終端機 */
+      --bg-cream-page: #f6f2e6;     /* 暖米白訓練手冊底色（與 index 深藍夜空區隔） */
+      --bg-card: #ffffff;           /* 純白任務卡 */
+      --bg-deep: #0f172a;           /* 深藍夜空（導覽列與終端機） */
+      --bg-panel: #16213e;          /* 深藍輔助卡 */
+      --forest-green: #16a34a;      /* 森林綠主架構框 */
+      --forest-dark: #14532d;
+      --sunset-orange: #f97316;     /* 夕陽橘行動按鈕與強調 */
+      --neon-purple: #8b5cf6;       /* 霓虹藍紫關卡標籤 */
+      --neon-blue: #38bdf8;         /* 霓虹亮藍點綴 */
+      --text-dark: #1e293b;
+      --text-muted: #475569;
+    }
 
-        body {
-            font-family: "Microsoft JhengHei", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #f4f6f9;
-            color: #333;
-            scroll-behavior: smooth;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-        .navbar-custom {
-            background-color: var(--primary-blue);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.15);
-        }
+    html {
+      scroll-behavior: auto; /* 動態效果：無 */
+    }
 
-        .hero-banner {
-            background: linear-gradient(135deg, var(--primary-blue) 0%, var(--secondary-blue) 100%);
-            color: white;
-            padding: 50px 20px 40px;
-        }
+    body {
+      font-family: "M PLUS Rounded 1c", "PingFang TC", "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+      background-color: var(--bg-cream-page);
+      /* 方格筆記紙網格紋理（呼應遊戲方格但呈淺色手冊感） */
+      background-image:
+        linear-gradient(to right, rgba(22, 163, 74, 0.08) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(22, 163, 74, 0.08) 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: var(--text-dark);
+      line-height: 1.7;
+      padding-bottom: 48px;
+    }
 
-        .step-card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.06);
-            background: white;
-            transition: transform 0.2s ease;
-        }
-        .step-card:hover {
-            transform: translateY(-3px);
-        }
+    .pixel-font {
+      font-family: "DotGothic16", "M PLUS Rounded 1c", monospace, sans-serif;
+      letter-spacing: 0.04em;
+    }
 
-        .step-number {
-            display: inline-block;
-            width: 38px;
-            height: 38px;
-            background-color: var(--primary-blue);
-            color: white;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 38px;
-            font-weight: bold;
-            margin-right: 10px;
-        }
+    .container {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
 
-        .code-container {
-            position: relative;
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            border-radius: 8px;
-            padding: 18px;
-            font-family: "Consolas", "Courier New", monospace;
-            font-size: 0.9rem;
-            overflow-x: auto;
-        }
-        .copy-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            font-size: 0.8rem;
-        }
+    /* 1. 頂部導覽列（深藍 + 森林綠底線，與 index 呼應） */
+    header {
+      background: var(--bg-deep);
+      border-bottom: 4px solid var(--forest-green);
+      padding: 12px 16px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
 
-        .toc-card {
-            position: sticky;
-            top: 90px;
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-    </style>
+    .nav-inner {
+      max-width: 1080px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      font-size: 1.12rem;
+      color: #fcfaf2;
+    }
+
+    .btn-pixel {
+      display: inline-block;
+      background: var(--sunset-orange);
+      color: #ffffff;
+      font-weight: 800;
+      text-decoration: none;
+      padding: 8px 16px;
+      border: 3px solid #ffffff;
+      box-shadow: 4px 4px 0px #060b19;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.92rem;
+    }
+
+    .btn-pixel:hover {
+      background: #ea580c;
+    }
+
+    .btn-green {
+      background: var(--forest-green);
+    }
+
+    .btn-green:hover {
+      background: #15803d;
+    }
+
+    /* 2. Hero 主視覺橫幅（森林綠 + 深藍硬邊框，搭配「教練版斑斑」SVG） */
+    .hero-banner {
+      margin-top: 24px;
+      margin-bottom: 28px;
+      background: var(--bg-deep);
+      color: #ffffff;
+      border: 4px solid var(--forest-green);
+      box-shadow: 6px 6px 0px var(--forest-dark);
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background: var(--neon-purple);
+      color: #ffffff;
+      padding: 4px 12px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      border: 2px solid #ffffff;
+      margin-bottom: 10px;
+    }
+
+    .hero-banner h1 {
+      font-size: 1.75rem;
+      line-height: 1.35;
+      margin-bottom: 10px;
+      color: #ffffff;
+    }
+
+    .hero-banner p {
+      color: #e2e8f0;
+      font-size: 1rem;
+    }
+
+    .mascot-card {
+      background: #16213e;
+      border: 3px solid var(--neon-blue);
+      padding: 12px;
+      text-align: center;
+      min-width: 150px;
+    }
+
+    .mascot-caption {
+      font-size: 0.8rem;
+      color: #fde047;
+      margin-top: 6px;
+      font-weight: 700;
+    }
+
+    /* 3. 雙欄版面：左側任務進度地圖 + 右側三步驟卡片 */
+    .layout-grid {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    /* 左側固定目錄（像遊戲 Quest Log 任務清單） */
+    .quest-toc {
+      position: sticky;
+      top: 84px;
+      background: var(--bg-card);
+      border: 4px solid var(--bg-deep);
+      box-shadow: 5px 5px 0px var(--bg-deep);
+      padding: 16px;
+    }
+
+    .quest-toc h2 {
+      font-size: 1.05rem;
+      color: var(--forest-dark);
+      border-bottom: 3px dashed var(--forest-green);
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+    }
+
+    .quest-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quest-list a {
+      display: block;
+      text-decoration: none;
+      color: var(--text-dark);
+      font-weight: 700;
+      font-size: 0.92rem;
+      padding: 8px 10px;
+      background: #fcfaf2;
+      border: 2px solid #cbd5e1;
+    }
+
+    .quest-list a:hover {
+      border-color: var(--sunset-orange);
+      background: #fff7ed;
+      color: #c2410c;
+    }
+
+    /* 右側步驟卡片（米白亮色系 + 像素粗框陰影） */
+    .step-card {
+      background: var(--bg-card);
+      border: 4px solid var(--bg-deep);
+      box-shadow: 6px 6px 0px var(--bg-deep);
+      padding: 22px;
+      margin-bottom: 24px;
+    }
+
+    .step-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 12px;
+      margin-bottom: 14px;
+      border-bottom: 3px dashed #cbd5e1;
+    }
+
+    .step-badge {
+      background: var(--forest-green);
+      color: #ffffff;
+      font-weight: 800;
+      padding: 4px 12px;
+      border: 2px solid var(--bg-deep);
+      box-shadow: 2px 2px 0px var(--bg-deep);
+      font-size: 0.9rem;
+    }
+
+    .step-header h3 {
+      font-size: 1.28rem;
+      color: var(--bg-deep);
+      font-weight: 800;
+    }
+
+    .step-intro {
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .step-ol {
+      padding-left: 24px;
+      margin-bottom: 16px;
+    }
+
+    .step-ol > li {
+      margin-bottom: 10px;
+    }
+
+    .step-ol ul, .step-ol ol {
+      padding-left: 22px;
+      margin-top: 6px;
+      margin-bottom: 6px;
+    }
+
+    .step-ol li li {
+      margin-bottom: 4px;
+    }
+
+    a.ext-link {
+      color: #1d4ed8;
+      font-weight: 800;
+      text-decoration: underline;
+    }
+
+    a.ext-link:hover {
+      color: var(--sunset-orange);
+    }
+
+    code {
+      background: #e2e8f0;
+      color: #0f172a;
+      padding: 2px 6px;
+      border: 1px solid #94a3b8;
+      font-family: "DotGothic16", Consolas, monospace;
+      font-size: 0.9em;
+    }
+
+    /* 提示框（遊戲 NPC 對話框風格） */
+    .npc-tip {
+      background: #fcfaf2;
+      border: 3px solid var(--sunset-orange);
+      border-left: 8px solid var(--sunset-orange);
+      padding: 12px 14px;
+      font-size: 0.94rem;
+      color: var(--text-dark);
+    }
+
+    .npc-tip-success {
+      background: #f0fdf4;
+      border-color: var(--forest-green);
+      border-left-color: var(--forest-green);
+    }
+
+    /* 程式碼終端機區塊（呼應 index.html 的深藍霓虹 HUD 配色） */
+    .terminal-box {
+      background: var(--bg-deep);
+      border: 4px solid var(--neon-purple);
+      box-shadow: 5px 5px 0px #060b19;
+      margin: 14px 0 16px;
+    }
+
+    .terminal-top {
+      background: #1e293b;
+      border-bottom: 2px solid var(--neon-purple);
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .terminal-title {
+      color: var(--neon-blue);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .copy-btn {
+      background: var(--sunset-orange);
+      color: #ffffff;
+      border: 2px solid #ffffff;
+      padding: 4px 12px;
+      font-weight: 800;
+      font-family: inherit;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: #ea580c;
+    }
+
+    .terminal-box pre {
+      padding: 16px;
+      overflow-x: auto;
+      color: #f8fafc;
+      font-family: Consolas, "Courier New", monospace;
+      font-size: 0.9rem;
+      line-height: 1.55;
+    }
+
+    .terminal-box pre code {
+      background: transparent;
+      border: none;
+      color: inherit;
+      padding: 0;
+      font-family: inherit;
+    }
+
+    /* 頁尾 */
+    footer {
+      background: var(--bg-deep);
+      color: #cbd5e1;
+      border-top: 4px solid var(--sunset-orange);
+      text-align: center;
+      padding: 20px 16px;
+      margin-top: 32px;
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 820px) {
+      .layout-grid {
+        grid-template-columns: 1fr;
+      }
+      .quest-toc {
+        position: static;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hero-banner {
+        grid-template-columns: 1fr;
+      }
+      .hero-banner h1 {
+        font-size: 1.45rem;
+      }
+    }
+  </style>
 </head>
 <body>
 
-    <!-- 1. 導覽列 -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom sticky-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold fs-4" href="index.html">
-                🚦 AI 交通安全工作坊：三步走實作手冊
-            </a>
-            <a href="index.html" class="btn btn-warning fw-bold btn-sm ms-auto me-2">
-                🚀 返回系統入口首頁
-            </a>
-        </div>
-    </nav>
+  <!-- 1. 導覽列 -->
+  <header>
+    <div class="nav-inner">
+      <div class="brand pixel-font">
+        <!-- 像素徽章 SVG -->
+        <svg width="28" height="28" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true">
+          <rect x="2" y="1" width="12" height="14" fill="#f97316" />
+          <rect x="3" y="2" width="10" height="12" fill="#0f172a" />
+          <rect x="4" y="4" width="8" height="2" fill="#fcfaf2" />
+          <rect x="4" y="7" width="8" height="2" fill="#fcfaf2" />
+          <rect x="4" y="10" width="8" height="2" fill="#16a34a" />
+        </svg>
+        <span>校園安全小隊｜AI 模型訓練實作手冊</span>
+      </div>
+      <a href="index.html" class="btn-pixel">◀ 返回斑馬線檢測主頁</a>
+    </div>
+  </header>
+
+  <main class="container">
 
     <!-- 2. Hero 主視覺區塊 -->
-    <div class="hero-banner text-center mb-5">
-        <div class="container">
-            <h1 class="display-6 fw-bold mb-3">從零打造 AI 道路安全辨識網頁</h1>
-            <p class="lead mx-auto" style="max-width: 750px; color: #e2e8f0; font-size: 1.1rem;">
-                不需安裝任何電腦軟體！使用工作坊提供的<b>基礎街景資料包（80 張）</b>搭配自選實拍圖，依序完成 <b>Roboflow 資料擴充</b>、<b>Google Colab 一鍵訓練</b> 與 <b>GitHub Pages 網頁發布</b>。
-            </p>
-        </div>
-    </div>
+    <section class="hero-banner">
+      <div>
+        <div class="hero-tag pixel-font">TRAINING CAMP // Roboflow ➔ Colab ➔ GitHub Pages</div>
+        <h1>從零打造 AI 道路安全辨識網頁！</h1>
+        <p>
+          不需安裝任何電腦軟體！跟著斑斑教練使用工作坊提供的<strong>基礎街景資料包（80 張）</strong>搭配自選實拍圖，依序完成 <strong>Roboflow 資料擴充</strong>、<strong>Google Colab 一鍵訓練</strong> 與 <strong>GitHub Pages 網頁發布</strong>！
+        </p>
+      </div>
 
-    <!-- 3. 主要內容區域 -->
-    <div class="container">
-        <div class="row g-4">
-            
-            <!-- 左側：快速選單列 -->
-            <div class="col-lg-3 d-none d-lg-block">
-                <div class="card toc-card p-3 bg-white">
-                    <h6 class="fw-bold text-primary mb-3">📍 實作步驟目錄</h6>
-                    <div class="list-group list-group-flush small">
-                        <a href="#step1" class="list-group-item list-group-item-action border-0 ps-0">1. Roboflow 匯入與補標註</a>
-                        <a href="#step2" class="list-group-item list-group-item-action border-0 ps-0">2. Google Colab 模型訓練</a>
-                        <a href="#step3" class="list-group-item list-group-item-action border-0 ps-0">3. GitHub Pages 網頁發布</a>
-                    </div>
-                </div>
+      <!-- 教練版吉祥物 SVG（戴耳麥與拿手冊的斑斑） -->
+      <div class="mascot-card">
+        <svg width="104" height="104" viewBox="0 0 16 16" shape-rendering="crispEdges" role="img" aria-label="訓練營教練斑斑">
+          <rect x="1" y="1" width="14" height="14" fill="#0f172a" />
+          <!-- 教練鴨舌帽（森林綠） -->
+          <rect x="4" y="2" width="8" height="2" fill="#16a34a" />
+          <rect x="3" y="4" width="11" height="1" fill="#22c55e" />
+          <!-- 斑馬頭（米白） -->
+          <rect x="4" y="5" width="8" height="5" fill="#fcfaf2" />
+          <!-- 教練眼鏡（夕陽橘框） -->
+          <rect x="4" y="6" width="8" height="2" fill="#f97316" />
+          <rect x="5" y="6" width="2" height="2" fill="#0f172a" />
+          <rect x="9" y="6" width="2" height="2" fill="#0f172a" />
+          <rect x="5" y="6" width="1" height="1" fill="#38bdf8" />
+          <rect x="9" y="6" width="1" height="1" fill="#38bdf8" />
+          <!-- 微笑 -->
+          <rect x="7" y="9" width="2" height="1" fill="#f97316" />
+          <!-- 訓練營背心（霓虹藍紫） -->
+          <rect x="3" y="10" width="10" height="4" fill="#8b5cf6" />
+          <rect x="7" y="10" width="2" height="4" fill="#fcfaf2" />
+          <!-- 手拿攻略本（米白+橘） -->
+          <rect x="12" y="9" width="3" height="4" fill="#fcfaf2" />
+          <rect x="13" y="10" width="1" height="2" fill="#f97316" />
+        </svg>
+        <div class="mascot-caption pixel-font">訓練教官：斑斑<br>STAGE 1~3 攻略指南</div>
+      </div>
+    </section>
+
+    <!-- 3. 雙欄主要內容區域 -->
+    <div class="layout-grid">
+
+      <!-- 左側：任務步驟目錄 -->
+      <aside class="quest-toc">
+        <h2 class="pixel-font">📍 實作任務目錄</h2>
+        <ul class="quest-list">
+          <li><a href="#step1">STAGE 1：Roboflow 匯入與補標註</a></li>
+          <li><a href="#step2">STAGE 2：Google Colab 模型訓練</a></li>
+          <li><a href="#step3">STAGE 3：GitHub Pages 網頁發布</a></li>
+        </ul>
+      </aside>
+
+      <!-- 右側：三大步驟實作指南 -->
+      <div>
+
+        <!-- Step 1: Roboflow -->
+        <section id="step1" class="step-card">
+          <div class="step-header">
+            <span class="step-badge pixel-font">STAGE 01</span>
+            <h3>Roboflow：匯入基礎資料包與自選圖標註</h3>
+          </div>
+          <p class="step-intro">
+            為節省重複標註時間，我們已為大家準備好 <strong>80 張已標註完成</strong>的台灣路口街景資料包！你只需要匯入這批資料，再額外挑選 <strong>1～2 張</strong> 自己喜歡的街景照片親手完成標註即可。
+          </p>
+
+          <ol class="step-ol">
+            <li>
+              <strong>準備素材：</strong>點擊前往
+              <a href="https://drive.google.com/file/d/13XXgOZQO4PjOwCFhYFWQZOHd4d0iQE8u/view?usp=sharing" target="_blank" rel="noopener noreferrer" class="ext-link">
+                📥 下載基礎街景資料集 (Google Drive)
+              </a>
+            </li>
+            <li>解壓縮工作坊提供的「80 張基礎資料集」，並另外從 Google 街景找 1～2 張新的路口照片。</li>
+            <li>前往 <a href="https://roboflow.com/" target="_blank" rel="noopener noreferrer" class="ext-link">Roboflow 官網</a> 註冊並登入帳號。</li>
+            <li>點擊 <strong>Create New Project</strong>，選擇專案類型為 <code>Object Detection</code>，建立標註類別（例如 <code>crosswalk</code> 斑馬線）。</li>
+            <li>點擊 <strong>Upload Data</strong> 把剛剛準備的所有資料一起拖曳上傳並儲存（80 張會自動帶入標註框），接著點左側 <strong>Annotate</strong>，幫你額外找的那 1～2 張新照片畫框即可。</li>
+            <li>
+              <strong>設定資料集分割比例 (Train / Valid / Test Split)：</strong><br />
+              在匯出前確認資料切分為：<strong>70% 訓練集 (Train)</strong>、<strong>20% 驗證集 (Valid)</strong>、<strong>10% 測試集 (Test)</strong>，確保訓練與驗證集都有充足樣本。
+            </li>
+            <li>
+              點擊左側選單的 <strong>Versions</strong> ➔ 點擊 <strong>Create New Version</strong> 設定影像預處理與資料增強：
+              <ul>
+                <li>
+                  <strong>Preprocessing (預處理)：</strong>
+                  <ul>
+                    <li>Auto-Orient: Applied</li>
+                    <li>Resize: Stretch to <code>640x640</code></li>
+                  </ul>
+                </li>
+                <li>
+                  <strong>Augmentations (資料增強 4 項)：</strong>
+                  <ul>
+                    <li><strong>Flip</strong>: Horizontal（水平翻轉，模擬雙向車道視野）</li>
+                    <li><strong>Brightness</strong>: Between <code>-15%</code> and <code>+15%</code>（模擬晴天與陰天光照）</li>
+                    <li><strong>Exposure</strong>: Between <code>-15%</code> and <code>+15%</code>（模擬不同過曝與暗部環境）</li>
+                    <li><strong>Blur</strong>: Up to <code>2.5px</code>（模擬行車動態模糊）</li>
+                    <li>Outputs per training example: <code>3</code>（每張訓練圖片產出 3 張擴增影像）</li>
+                  </ul>
+                </li>
+                <li>點擊最下方 <strong>Create</strong> 產生版本。</li>
+              </ul>
+            </li>
+            <li>版號產出後，點選右上角 <strong>Export Dataset</strong> ➔ 選擇格式為 <strong>YOLO26</strong> ➔ 選擇 <code>show download code</code> 並複製提示框中的 <strong>Python Code</strong>（包含你的 API Key）。</li>
+          </ol>
+
+          <div class="npc-tip">
+            💡 <strong>斑斑提示：</strong>匯入 80 張基礎資料包能確保訓練集與驗證集樣本充足、辨識率穩定；記得將複製好的 Roboflow 下載程式碼妥善保存，待會直接貼入 STAGE 02 的 Colab 中執行！
+          </div>
+        </section>
+
+        <!-- Step 2: Google Colab -->
+        <section id="step2" class="step-card">
+          <div class="step-header">
+            <span class="step-badge pixel-font" style="background: var(--neon-purple);">STAGE 02</span>
+            <h3>Google Colab：GPU 雲端模型訓練與 ONNX 自動下載</h3>
+          </div>
+          <p class="step-intro">
+            利用 Google 提供的免費 GPU 算力一鍵訓練 YOLO 模型，並自動轉換與下載瀏覽器專用的 <code>best.onnx</code> 檔。
+          </p>
+
+          <ol class="step-ol">
+            <li>開啟 <a href="https://colab.research.google.com/" target="_blank" rel="noopener noreferrer" class="ext-link">Google Colab</a>，建立一份「新增筆記本」。</li>
+            <li>確認已開啟 GPU 加速：點選上方選單 <strong>執行階段 ➔ 變更執行階段類型 ➔ 選擇 T4 GPU</strong>。</li>
+            <li>將下方完整的 Python 腳本複製並貼入 Colab 的程式碼區塊中（記得替換成你自己的 Roboflow 下載碼），點擊左側播放鍵執行：</li>
+          </ol>
+
+          <!-- Colab 腳本區塊（深藍 HUD 終端機） -->
+          <div class="terminal-box">
+            <div class="terminal-top">
+              <span class="terminal-title pixel-font">TERMINAL // colab_train_yolo26.py</span>
+              <button type="button" class="copy-btn" onclick="copyCode()">📋 複製程式碼</button>
             </div>
-
-            <!-- 右側：三大步驟實作指南 -->
-            <div class="col-lg-9">
-
-                <!-- Step 1: Roboflow -->
-                <div id="step1" class="card step-card p-4 mb-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="step-number">1</span>
-                        <h3 class="fw-bold mb-0 text-primary">Roboflow：匯入基礎資料包與自選圖標註</h3>
-                    </div>
-                    <p class="text-muted">為節省重複標註時間，我們已為大家準備好 <b>80 張已標註完成</b>的台灣路口街景資料包！你只需要匯入這批資料，再額外挑選 <b>1～2 張</b> 自己喜歡的街景照片親手完成標註即可。</p>
-                    
-                    <ol class="lh-lg mb-3">
-                        <li>
-                            <b>準備素材：</b>點擊前往 
-                            <a href="https://drive.google.com/file/d/13XXgOZQO4PjOwCFhYFWQZOHd4d0iQE8u/view?usp=sharing" target="_blank" class="fw-bold text-decoration-underline">
-                            📥 下載基礎街景資料集 (Google Drive)
-                            </a>
-                        </li>
-                        <li>解壓縮工作坊提供的「80 張基礎資料集」，並另外從 Google 街景找 1～2 張新的路口照片。</li>
-                        <li>前往 <a href="https://roboflow.com/" target="_blank" class="fw-bold">Roboflow 官網</a> 註冊並登入帳號。</li>
-                        <li>點擊 <b>Create New Project</b>，選擇專案類型為 <code>Object Detection</code>，建立標註類別（例如 <code>crosswalk</code> 斑馬線)</li>
-                        <li>點擊 Upload Data 把剛剛準備的所有資料一起拖曳上傳並儲存（80 張會自動帶入標註框），接著點左側 Annotate，幫你額外找的那 1～2 張新照片畫框即可。</li>
-                        <li><b>設定資料集分割比例 (Train / Valid / Test Split)</b>：<br>
-                            在匯出前確認資料切分為：<b>70% 訓練集 (Train)</b>、<b>20% 驗證集 (Valid)</b>、<b>10% 測試集 (Test)</b>，確保訓練與驗證集都有充足樣本。
-                        </li>
-                        <li>點擊左側選單的 <b>Versions</b> ➔ 點擊 <b>Create New Version</b> 設定影像預處理與資料增強：
-                            <ul>
-                                <li><b>Preprocessing (預處理)</b>：
-                                    <ul>
-                                        <li>Auto-Orient: Applied</li>
-                                        <li>Resize: Stretch to <code>640x640</code></li>
-                                    </ul>
-                                </li>
-                                <li><b>Augmentations (資料增強 4 項)</b>：
-                                    <ul>
-                                        <li><b>Flip</b>: Horizontal（水平翻轉，模擬雙向車道視野）</li>
-                                        <li><b>Brightness</b>: Between <code>-15%</code> and <code>+15%</code>（模擬晴天與陰天光照）</li>
-                                        <li><b>Exposure</b>: Between <code>-15%</code> and <code>+15%</code>（模擬不同過曝與暗部環境）</li>
-                                        <li><b>Blur</b>: Up to <code>2.5px</code>（模擬行車動態模糊）</li>
-                                        <li>Outputs per training example: <code>3</code>（每張訓練圖片產出 3 張擴增影像）</li>
-                                    </ul>
-                                </li>
-                                <li>點擊最下方 <b>Create</b> 產生版本。</li>
-                            </ul>
-                        </li>
-                        <li>版號產出後，點選右上角 <b>Export Dataset</b> ➔ 選擇格式為 <b>YOLO26</b> ➔ 選擇 <code>show download code</code> 並複製提示框中的 <b>Python Code</b>（包含你的 API Key）。</li>
-                    </ol>
-
-                    <div class="alert alert-info mb-0 small">
-                        💡 <b>提示：</b>匯入 80 張基礎資料包能確保訓練集與驗證集樣本充足、辨識率穩定；記得將複製好的 Roboflow 下載程式碼妥善保存，待會直接貼入 Step 2 的 Colab 中執行！
-                    </div>
-                </div>
-
-                <!-- Step 2: Google Colab -->
-                <div id="step2" class="card step-card p-4 mb-4">
-                    <div class="d-flex align-items-center mb-3">
-                        <span class="step-number">2</span>
-                        <h3 class="fw-bold mb-0 text-primary">Google Colab：GPU 雲端模型訓練與 ONNX 自動下載</h3>
-                    </div>
-                    <p class="text-muted">利用 Google 提供的免費 GPU 算力一鍵訓練 YOLO 模型，並自動轉換與下載瀏覽器專用的 <code>best.onnx</code> 檔。</p>
-                    
-                    <ol class="lh-lg mb-3">
-                        <li>開啟 <a href="https://colab.research.google.com/" target="_blank" class="fw-bold">Google Colab</a>，建立一份「新增筆記本」。</li>
-                        <li>確認已開啟 GPU 加速：點選上方選單 <b>執行階段 -> 變更執行階段類型 -> 選擇 T4 GPU</b>。</li>
-                        <li>將下方完整的 Python 腳本複製並貼入 Colab 的程式碼區塊中（記得替換成你自己的 Roboflow 下載碼），點擊左側播放鍵執行：</li>
-                    </ol>
-
-                    <!-- Colab 腳本區塊 -->
-                    <div class="code-container mb-3">
-                        <button class="btn btn-sm btn-outline-light copy-btn" onclick="copyCode()">📋 複製程式碼</button>
 <pre id="python-code"><code># 1. 安裝 Ultralytics (YOLO) 與 Roboflow 套件
 !pip install -q ultralytics roboflow
 
@@ -212,75 +571,82 @@ print(f"✅ 模型匯出成功！檔案位置：{onnx_path}")
 
 from google.colab import files
 files.download(onnx_path)</code></pre>
-                    </div>
+          </div>
 
-                    <ol class="lh-lg mb-0" start="4">
-                        <li>訓練與匯出完成後，瀏覽器會<b>自動彈出下載視窗</b>將 <code>best.onnx</code> 存到電腦的「下載」資料夾中。</li>
-                        <li>（備案）若瀏覽器阻擋自動下載，可點擊 Colab 左側工具列的 <b>「檔案 (資料夾圖示)」</b> ➔ 依序展開 <code>runs/detect/train/weights/</code> ➔ 在 <code>best.onnx</code> 上按右鍵選擇<b>下載</b>即可。</li>
-                    </ol>
-                </div>
+          <ol class="step-ol" start="4" style="margin-bottom: 0;">
+            <li>訓練與匯出完成後，瀏覽器會<strong>自動彈出下載視窗</strong>將 <code>best.onnx</code> 存到電腦的「下載」資料夾中。</li>
+            <li>（備案）若瀏覽器阻擋自動下載，可點擊 Colab 左側工具列的 <strong>「檔案 (資料夾圖示)」</strong> ➔ 依序展開 <code>runs/detect/train/weights/</code> ➔ 在 <code>best.onnx</code> 上按右鍵選擇<strong>下載</strong>即可。</li>
+          </ol>
+        </section>
 
-                <!-- Step 3: GitHub Pages -->
-                <div id="step3" class="card step-card p-4 mb-5">
-    <div class="d-flex align-items-center mb-3">
-        <span class="step-number">3</span>
-        <h3 class="fw-bold mb-0 text-primary">GitHub Pages：網頁一鍵部署與成果展示</h3>
-    </div>
-    <p class="text-muted">將前端網頁與剛下載的 <code>best.onnx</code> 檔案上傳至 GitHub，產出專屬的 AI 辨識網站！</p>
-    
-    <ol class="lh-lg mb-3">
-        <li>登入 <a href="https://github.com/" target="_blank" class="fw-bold">GitHub</a>，點擊右上角 <b>+ -> New repository</b> 建立新的儲存庫（如：<code>crosswalk-ai-app</code>）。</li>
-        <li><b>生成網頁並上傳至 GitHub</b>：
-            <ol type="a" class="mt-1">
-            <li>點擊前往 
-            <a href="https://docs.google.com/document/d/1nAkxZQKW6qoAT-4HoDWhcnb7joCEcsc6/edit?usp=sharing&ouid=118194296036695815409&rtpof=true&sd=true" target="_blank" class="fw-bold text-decoration-underline">
-                📄 複製 AI 網頁生成提示詞 (Google Docs)
-            </a>，將內容完整貼給 <b>ChatGPT / Gemini</b>，讓 AI 幫你產生 <code>index.html</code> 程式碼。
+        <!-- Step 3: GitHub Pages -->
+        <section id="step3" class="step-card">
+          <div class="step-header">
+            <span class="step-badge pixel-font" style="background: var(--sunset-orange);">STAGE 03</span>
+            <h3>GitHub Pages：網頁一鍵部署與成果展示</h3>
+          </div>
+          <p class="step-intro">
+            將前端網頁與剛下載的 <code>best.onnx</code> 檔案上傳至 GitHub，產出專屬的 AI 辨識網站！
+          </p>
+
+          <ol class="step-ol">
+            <li>登入 <a href="https://github.com/" target="_blank" rel="noopener noreferrer" class="ext-link">GitHub</a>，點擊右上角 <strong>+ ➔ New repository</strong> 建立新的儲存庫（如：<code>crosswalk-ai-app</code>）。</li>
+            <li>
+              <strong>生成網頁並上傳至 GitHub：</strong>
+              <ol type="a">
+                <li>
+                  點擊前往
+                  <a href="https://docs.google.com/document/d/1nAkxZQKW6qoAT-4HoDWhcnb7joCEcsc6/edit?usp=sharing&ouid=118194296036695815409&rtpof=true&sd=true" target="_blank" rel="noopener noreferrer" class="ext-link">
+                    📄 複製 AI 網頁生成提示詞 (Google Docs)
+                  </a>，將內容完整貼給 <strong>ChatGPT / Gemini</strong>，讓 AI 幫你產生 <code>index.html</code> 程式碼。
+                </li>
+                <li>
+                  取得程式碼後，透過以下任一方式放到 GitHub（<strong>務必確認 <code>index.html</code> 與 <code>best.onnx</code> 都在同一個儲存庫裡</strong>）：
+                  <ul>
+                    <li><strong>方式 A（直接貼上程式碼）</strong>：在 GitHub 點擊 <strong>Creating a new file</strong> ➔ 檔名輸入 <code>index.html</code> 並貼入程式碼 ➔ 按下 <strong>Commit changes</strong> 後，再點擊 <strong>Add file ➔ Upload files</strong> 上傳 <code>best.onnx</code>。</li>
+                    <li><strong>方式 B（本機存檔後一起上傳）</strong>：將 AI 產生的程式碼存成電腦中的 <code>index.html</code> ➔ 在 GitHub 點擊 <strong>uploading an existing file</strong>，將 <code>index.html</code> 與 <code>best.onnx</code> 一起拖曳上傳並按下 <strong>Commit changes</strong>。</li>
+                  </ul>
+                </li>
+              </ol>
             </li>
-        <li>取得程式碼後，透過以下任一方式放到 GitHub（<b>務必確認 <code>index.html</code> 與 <code>best.onnx</code> 都在同一個儲存庫裡</b>）：
-            <ul>
-                <li><b>方式 A（直接貼上程式碼）</b>：在 GitHub 點擊 <b>Creating a new file</b> ➔ 檔名輸入 <code>index.html</code> 並貼入程式碼 ➔ 按下 <b>Commit changes</b> 後，再點擊 <b>Add file -> Upload files</b> 上傳 <code>best.onnx</code>。</li>
-                <li><b>方式 B（本機存檔後一起上傳）</b>：將 AI 產生的程式碼存成電腦中的 <code>index.html</code> ➔ 在 GitHub 點擊 <b>uploading an existing file</b>，將 <code>index.html</code> 與 <code>best.onnx</code> 一起拖曳上傳並按下 <b>Commit changes</b>。</li>
-            </ul>
-        </li>
-    </ol>
-</li>
-        <li>進入儲存庫頂部的 <b>Settings -> 左側 Pages</b>：
-            <ul>
-                <li><b>Source</b>：選為 <code>Deploy from a branch</code>。</li>
-                <li><b>Branch</b>：選擇 <code>main</code> 與 <code>/(root)</code>，按下 <b>Save</b>。</li>
-            </ul>
-        </li>
-        <li><b>確認網頁部署進度 (Actions)</b>：<br>
-            可點擊儲存庫頂部的 <b>Actions</b> 頁籤，查看 <code>pages-build-deployment</code> 是否出現綠色勾勾 <code>✅</code>。完成後頂部即會出現專屬公開網址（例：<code>https://username.github.io/crosswalk-ai-app/</code>）！
-        </li>
-    </ol>
+            <li>
+              進入儲存庫頂部的 <strong>Settings ➔ 左側 Pages</strong>：
+              <ul>
+                <li><strong>Source</strong>：選為 <code>Deploy from a branch</code>。</li>
+                <li><strong>Branch</strong>：選擇 <code>main</code> 與 <code>/(root)</code>，按下 <strong>Save</strong>。</li>
+              </ul>
+            </li>
+            <li>
+              <strong>確認網頁部署進度 (Actions)：</strong><br />
+              可點擊儲存庫頂部的 <strong>Actions</strong> 頁籤，查看 <code>pages-build-deployment</code> 是否出現綠色勾勾 <code>✅</code>。完成後頂部即會出現專屬公開網址（例：<code>https://username.github.io/crosswalk-ai-app/</code>）！
+            </li>
+          </ol>
 
-    <div class="alert alert-success mb-0 small">
-        🎉 <b>恭喜完成！</b>打開公開網址，上傳你剛剛自選的街景圖片，即可體驗純地端 Edge AI 的斑馬線辨識及安全度自動評估！
+          <div class="npc-tip npc-tip-success">
+            🎉 <strong>任務達成！</strong>打開公開網址，上傳你剛剛自選的街景圖片，即可體驗純地端 Edge AI 的斑馬線辨識及安全度自動評估！
+          </div>
+        </section>
+
+      </div>
     </div>
-</div>
+  </main>
 
-            </div>
-        </div>
+  <!-- 頁尾區塊 -->
+  <footer>
+    <div class="container">
+      <p class="pixel-font" style="color: #fcfaf2; margin-bottom: 4px;">校園安全小隊｜AI 交通安全工作坊實作手冊</p>
+      <small>Roboflow ➔ Google Colab ➔ GitHub Pages 全雲端實作教案 &copy; 2026 All Rights Reserved.</small>
     </div>
+  </footer>
 
-    <!-- 頁尾區塊 -->
-    <footer class="bg-dark text-white text-center py-4 mt-5">
-        <div class="container">
-            <p class="mb-1 fw-bold">🚦 AI 交通安全工作坊手冊</p>
-            <small class="text-white-50">Roboflow ➔ Google Colab ➔ GitHub Pages 全雲端實作教案 &copy; 2026 All Rights Reserved.</small>
-        </div>
-    </footer>
-
-    <!-- 程式碼複製腳本 -->
-    <script>
-        function copyCode() {
-            const codeText = document.getElementById('python-code').innerText;
-            navigator.clipboard.writeText(codeText).then(() => {
-                alert('✅ 已成功複製 Colab Python 訓練程式碼！');
-            });
-        }
-    </script>
+  <!-- 程式碼複製腳本（已修復原本換行斷開的 getElementById 語法錯誤） -->
+  <script>
+    function copyCode() {
+      const codeText = document.getElementById('python-code').innerText;
+      navigator.clipboard.writeText(codeText).then(() => {
+        alert('✅ 已成功複製 Colab Python 訓練程式碼！');
+      });
+    }
+  </script>
 </body>
 </html>
